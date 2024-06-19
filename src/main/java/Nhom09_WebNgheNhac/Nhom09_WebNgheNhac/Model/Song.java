@@ -38,4 +38,9 @@ public class Song {
     @ManyToOne
     @JoinColumn(referencedColumnName = "categoryId")
     private Category category;
+
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "singerId")
+    private Singer singer;
 }
