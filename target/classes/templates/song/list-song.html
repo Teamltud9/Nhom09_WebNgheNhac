@@ -9,7 +9,16 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>Products List</h1>
+    <div>
+        <form id="search-form" class="d-flex" th:action="@{/songs/search}" method="get">
+            <div class="input-group">
+                <input id="search-input" class="form-control me-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" name="query" required>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                <div id="search-results" class="dropdown-content w-100"></div>
+            </div>
+        </form>
+    </div>
+    <h1>Songs List</h1>
     <div>
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Product</a>
