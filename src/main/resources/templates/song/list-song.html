@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
       layout:decorate="~{layout}">
 <head>
     <title th:text="${title} ?: 'Products'">Products</title>
@@ -9,14 +10,10 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>Songs List</h1>
-    <div>
+    <h1 style="text-align:center">Songs List</h1>
+    <div sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
-            Product</a>
-        <a th:href="@{/user/login}" class="btn btn-primary mb-3">Login
-            </a>
-        <a th:href="@{/singer}" class="btn btn-primary mb-3">Login
-        </a>
+            Song</a>
     </div>
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
@@ -24,8 +21,9 @@
             <th>Image</th>
             <th>Name</th>
             <th>Time</th>
+            <th>Singer</th>
             <th>Category</th>
-            <th>Actions</th>
+            <th sec:authorize="hasAuthority('ADMIN')">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -37,23 +35,15 @@
             <td th:text="${song.songName}"></td>
             <td th:text="${song.time}"></td>
 
-            <td th:text="${song.category.name}"></td>
-            <td>
-                <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn
+            <td th:text="${song.singer.singerName}"></td>
+            <td th:text="${song.category.categoryName}"></td>
+            <td sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
 btn-success btn-sm">Edit</a>
-                <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn
+                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
 btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
-            <td>
-                <form th:action="@{/cart/add}" method="post">
-                    <input type="number" name="quantity" min="1" value="1"
-                           class="form-control d-inline-block" style="width: 70px;">
-                    <input type="hidden" th:value="${product.id}"
-                           name="productId"/>
-                    <button type="submit" class="btn btn-warning btn-sm">Add to
-                        Cart</button>
-                </form>
-            </td>
+
         </tr>
         </tbody>
     </table>
