@@ -32,6 +32,7 @@
             <th>Time</th>
             <th>Release Date</th>
             <th>Category</th>
+            <th>Singer</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -46,6 +47,7 @@
             <td th:text="${song.releaseDate}"></td>
 
             <td th:text="${song.category.categoryName}"></td>
+            <td th:text="${song.singer.singerName}"></td>
             <td>
                 <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
 btn-success btn-sm">Edit</a>

@@ -13,6 +13,7 @@
     <form th:action="@{/song/edit/{id}(id=${song.songId})}"
           th:object="${song}" method="post" enctype="multipart/form-data"
           class="needs-validation" novalidate>
+
         <div class="mb-3">
             <label for="songName" class="form-label">Song name:</label>
             <input type="text" th:field="*{songName}" class="form-control" id="songName"
@@ -20,6 +21,7 @@
             <div class="text-danger" th:if="${#fields.hasErrors('songName')}"
                  th:errors="*{songName}"></div>
         </div>
+
         <div class="mb-3">
             <label for="category" class="form-label">Category:</label>
             <select th:field="*{category}" class="form-control" id="category">
@@ -28,6 +30,13 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="singer" class="form-label">Singer:</label>
+            <select th:field="*{singer}" class="form-control" id="singer">
+                <option th:each="singer : ${singers}" th:value="${singer.singerId}"
+                        th:text="${singer.singerName}"></option>
+            </select>
+        </div>
         <div class="mb-3">
             <label for="releaseDate" class="form-label">Release Date:</label>
             <input type="date" th:field="*{releaseDate}" class="form-control" id="releaseDate"

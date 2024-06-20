@@ -3,6 +3,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SingerService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import com.mpatric.mp3agic.InvalidDataException;
@@ -28,6 +29,8 @@ public class SongController {
     private SongService songService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private SingerService singerService;
 
     @GetMapping
     public String listSong(Model model) {
@@ -39,6 +42,7 @@ public class SongController {
     public String showAddForm(Model model) {
         model.addAttribute("song", new Song());
         model.addAttribute("categories", categoryService.getAlCatologies());
+        model.addAttribute("singers", singerService.getAllSinger());
         return "/song/add-song";
     }
 
@@ -61,6 +65,7 @@ public class SongController {
         Song song = songService.getSongId(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
         model.addAttribute("categories", categoryService.getAlCatologies());
+        model.addAttribute("singers", singerService.getAllSinger());
         model.addAttribute("song", song);
         return "/song/update-song";
     }

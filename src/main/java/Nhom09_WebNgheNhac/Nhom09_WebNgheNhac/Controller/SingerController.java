@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Singer;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SingerService;
 import jakarta.validation.Valid;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/singer")
 public class SingerController {
@@ -56,7 +59,14 @@ public class SingerController {
             singer.setSingerId(Math.toIntExact(singerId));
             return "/singer/update-singer";
         }
-        singer.setImage(singerService.saveImage(imageFile));
+
+        if(!imageFile.isEmpty())
+            singer.setImage(singerService.saveImage(imageFile));
+        else{
+            Optional<Singer> singer1  = singerService.getSingerById(singerId);
+            singer.setImage(singer1.get().getImage());
+        }
+
         singerService.updateSinger(singer);
         model.addAttribute("singers", singerService.getAllSinger());
         return "redirect:/singer";
