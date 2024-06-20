@@ -1,10 +1,13 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -17,12 +20,14 @@ public class Song {
     private int songId;
 
     @Column(nullable = false)
-    @NotNull
+    @NotEmpty(message = "kkhfihf")
     private String songName;
 
     @Column(nullable = false)
     @Past
-    private Date releaseDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull
+    private LocalDate releaseDate;
 
     @Column(nullable = false)
     private LocalTime time;
@@ -32,7 +37,6 @@ public class Song {
 
 
     @Column(nullable = false)
-    @NotNull
     private String filePath;
 
     @ManyToOne

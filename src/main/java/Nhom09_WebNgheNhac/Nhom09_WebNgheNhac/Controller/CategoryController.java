@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/category")
@@ -55,7 +56,15 @@ public class CategoryController {
             category.setCategoryId(Math.toIntExact(categoryId));
             return "/category/update-category";
         }
-        category.setImage(categoryService.saveImage(imageFile));
+
+
+        if(!imageFile.isEmpty())
+            category.setImage(categoryService.saveImage(imageFile));
+        else{
+            Optional<Category> category1 = categoryService.getCategoryById(categoryId);
+            category.setImage(category1.get().getImage());
+        }
+
         categoryService.updateCategory(category);
         model.addAttribute("categories", categoryService.getAlCatologies());
         return "redirect:/category";

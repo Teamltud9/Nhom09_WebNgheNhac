@@ -14,12 +14,23 @@
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Product</a>
     </div>
+    <div>
+        <form id="search-form" class="d-flex" th:action="@{/song/search}" method="get">
+            <div class="input-group">
+                <input id="search-input" class="form-control me-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" name="query" required>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                <div id="search-results" class="dropdown-content w-100"></div>
+            </div>
+        </form>
+    </div>
+
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
             <th>Image</th>
             <th>Name</th>
             <th>Time</th>
+            <th>Release Date</th>
             <th>Category</th>
             <th>Actions</th>
         </tr>
@@ -28,31 +39,26 @@
         <tr th:each="song : ${songs}">
             <td>
                 <img th:src="@{${song.image}}"
-                     alt="${song.songName}" width="50" height="50">
+                     th:alt="@{${song.songName}}" width="50" height="50">
             </td>
             <td th:text="${song.songName}"></td>
             <td th:text="${song.time}"></td>
+            <td th:text="${song.releaseDate}"></td>
 
-            <td th:text="${song.category.name}"></td>
+            <td th:text="${song.category.categoryName}"></td>
             <td>
-                <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn
+                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
 btn-success btn-sm">Edit</a>
-                <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn
+                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
 btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
-            <td>
-                <form th:action="@{/cart/add}" method="post">
-                    <input type="number" name="quantity" min="1" value="1"
-                           class="form-control d-inline-block" style="width: 70px;">
-                    <input type="hidden" th:value="${product.id}"
-                           name="productId"/>
-                    <button type="submit" class="btn btn-warning btn-sm">Add to
-                        Cart</button>
-                </form>
-            </td>
+
         </tr>
         </tbody>
     </table>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
