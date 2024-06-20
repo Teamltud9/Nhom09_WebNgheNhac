@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 public class SongService {
 
     private final SongRepository songRepository;
-    private final List<Song> songs;
 
     public List<Song> searchSong(String query) {
         return songRepository.findBySongNameContainingIgnoreCase(query);
@@ -112,22 +111,6 @@ public class SongService {
         }
     }
 
-    public List<Song> Search(String query) {
-        List<Song> SongSearch = new ArrayList<>();
-        for(Song song: songs){
-            if (song.getSongName().equals(query)){
-                SongSearch.add(song);
-            }
-        }
-        return SongSearch;
-    }
 
-    public List<String> SearchSuggestions(String query)
-    {
-        return songs.stream()
-                .map(Song::getSongName)
-                .filter(title -> title.toLowerCase().startsWith(query.toLowerCase()))
-                .collect(Collectors.toList());
-    }
 
 }
