@@ -6,7 +6,9 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import static Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller.UserController.UserId;
+import java.util.Optional;
+
+
 
 
 public class UniqueValidator implements ConstraintValidator<Unique, String> {
@@ -26,13 +28,13 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
         boolean containsAtSymbol = s.contains("@");
-        User existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUserName(s);
-        if (existingUser != null) {
+        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUsername(s);
 
-            return existingUser.getUserId() == UserId;
-        }
 
-        return true;
+         if(!existingUser.isEmpty()){
+             return false;
+         }
+         return true;
 
     }
 
