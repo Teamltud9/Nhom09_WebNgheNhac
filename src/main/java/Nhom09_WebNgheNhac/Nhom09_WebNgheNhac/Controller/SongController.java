@@ -10,6 +10,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -105,6 +106,16 @@ public class SongController {
         songService.deleteSongById(songId);
         return "redirect:/";
     }
+    @GetMapping("/search")
+    public String Search(@NonNull Model model, String query) {
 
+        model.addAttribute("songs", songService.Search(query));
+        return "/song/list-song";
+    }
+    @GetMapping("/SearchSuggestions")
+    @ResponseBody
+    public List<String> searchSuggestions(String query) {
+        return songService.SearchSuggestions(query);
+    }
 
 }

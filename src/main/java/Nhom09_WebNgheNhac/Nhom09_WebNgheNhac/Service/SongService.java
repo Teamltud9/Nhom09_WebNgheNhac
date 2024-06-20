@@ -20,14 +20,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class SongService {
-
+    private final List<Song> songs;
     private final SongRepository songRepository;
 
     public List<Song> searchSong(String query) {
@@ -108,6 +110,21 @@ public class SongService {
             Files.deleteIfExists(tempFile);
         }
     }
+    public List<Song> Search(String query) {
+        List<Song> SongSearch = new ArrayList<>();
+        for(Song song: songs){
+            if (song.getSongName().equals(query)){
+                SongSearch.add(song);
+            }
+        }
+        return SongSearch;
+    }
 
-
+    public List<String> SearchSuggestions(String query)
+    {
+        return songs.stream()
+                .map(Song::getSongName)
+                .filter(title -> title.toLowerCase().startsWith(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 }
