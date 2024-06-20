@@ -2,6 +2,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class Category {
     private int categoryId;
 
     @Column(nullable = false)
-    @NotNull
+    @NotEmpty
     private String categoryName;
 
     @Column(nullable = false)
