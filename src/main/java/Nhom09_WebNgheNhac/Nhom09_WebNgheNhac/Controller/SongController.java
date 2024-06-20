@@ -8,6 +8,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +107,20 @@ public class SongController {
         return "redirect:/";
     }
 
+
+    @GetMapping("/search")
+    public String Search(@NonNull Model model, String query) {
+
+        model.addAttribute("songs", songService.Search(query));
+        return "/song/list-song";
+    }
+    @GetMapping("/SearchSuggestions")
+    @ResponseBody
+    public List<String> searchSuggestions(String query) {
+        return songService.getAllSong().stream()
+                .map(Song::getSongName)
+                .filter(title -> title.toLowerCase().startsWith(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 
 }

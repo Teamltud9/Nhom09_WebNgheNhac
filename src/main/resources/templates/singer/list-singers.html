@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
       layout:decorate="~{layout}">
 <head>
     <title th:text="${title} ?: 'Singer List'"> Categories List </title>
@@ -9,9 +10,9 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>Singer List</h1>
+    <h1 style="text-align:center">Singer List</h1>
     <div>
-        <a th:href="@{/singer/add}" class="btn btn-primary mb-3">Add New
+        <a  sec:authorize="hasAuthority('ADMIN')" th:href="@{/singer/add}" class="btn btn-primary mb-3">Add New
             Singer</a>
     </div>
     <table class="table table-bordered table-hover">
@@ -20,18 +21,19 @@
             <th>Name</th>
             <th>Image</th>
             <th>Gender</th>
-            <th></th>
+            <th sec:authorize="hasAuthority('ADMIN')">Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="singer : ${singers}">
-            <td th:text="${singer.singerName}"></td>
             <td>
                 <img th:src="@{${singer.image}}"
                      th:alt="@{${singer.singerName}}" width="50" height="50">
             </td>
+            <td th:text="${singer.singerName}"></td>
+
             <td th:text="${singer.gender} ? 'Male' : 'Female'"></td>
-            <td>
+            <td  sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/singer/edit/{id}(id=${singer.singerId})}" class="btn btn-success btn-sm">Edit</a>
                 <a th:href="@{/singer/delete/{id}(id=${singer.singerId})}"
                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
