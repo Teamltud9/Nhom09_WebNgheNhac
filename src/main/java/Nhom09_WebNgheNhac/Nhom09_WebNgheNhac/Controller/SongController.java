@@ -111,16 +111,13 @@ public class SongController {
     @GetMapping("/search")
     public String Search(@NonNull Model model, String query) {
 
-        model.addAttribute("songs", songService.Search(query));
+        List<Song> songs = songService.getAllSong();
+        model.addAttribute("songs", songs.stream()
+                .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList()));
         return "/song/list-song";
     }
-    @GetMapping("/SearchSuggestions")
-    @ResponseBody
-    public List<String> searchSuggestions(String query) {
-        return songService.getAllSong().stream()
-                .map(Song::getSongName)
-                .filter(title -> title.toLowerCase().startsWith(query.toLowerCase()))
-                .collect(Collectors.toList());
-    }
+
+
 
 }
