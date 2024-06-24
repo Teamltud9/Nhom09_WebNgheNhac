@@ -31,10 +31,10 @@ public class UserService implements UserDetailsService {
     }
     // Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
     public void setDefaultRole(String username) {
-        userRepository.findByUsername(username).ifPresentOrElse(
+        userRepository.findByUserName(username).ifPresentOrElse(
                 user -> {
 
-                    user.getRoles().add(roleRepository.findRoleById(Role.USER.value));
+                    user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
                     userRepository.save(user);
                 },
                 () -> {
@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException {
-        var user = userRepository.findByUsername(username)
+        var user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
@@ -59,12 +59,12 @@ public class UserService implements UserDetailsService {
     }
     // Tìm kiếm người dùng dựa trên tên đăng nhập.
     public Optional<User> findByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUserName(username);
     }
 
     // Kiểm tra tính duy nhất của username.
     public boolean isUsernameUnique(String username) {
-        return !userRepository.findByUsername(username).isPresent();
+        return !userRepository.findByUserName(username).isPresent();
     }
 
     // Kiểm tra tính duy nhất của email.

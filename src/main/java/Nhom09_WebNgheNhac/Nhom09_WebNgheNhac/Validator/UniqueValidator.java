@@ -28,7 +28,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
         boolean containsAtSymbol = s.contains("@");
-        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUsername(s);
+        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUserName(s);
 
 
          if(!existingUser.isEmpty()){

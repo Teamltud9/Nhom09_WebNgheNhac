@@ -52,7 +52,6 @@ public class SongService {
         existingsSong.setSongName(song.getSongName());
         existingsSong.setReleaseDate(song.getReleaseDate());
         existingsSong.setCategory(song.getCategory());
-        existingsSong.setSinger(song.getSinger());
         existingsSong.setTime(song.getTime());
         existingsSong.setImage(song.getImage());
         existingsSong.setFilePath(song.getFilePath());
