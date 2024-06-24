@@ -15,17 +15,17 @@ public class Premium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int serviceId;
+    private int premiumId;
 
     @NotEmpty(message = "Service Name không được để trống")
     @Column(nullable = false)
-    private String serviceName;
+    private String premiumName;
 
     @Column(nullable = false)
     @NotNull(message = "Price không được để trống")
     @Positive(message = "Price phải là số dương")
     private double price;
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "premium")
     private Set<Invoice> invoices;
 }

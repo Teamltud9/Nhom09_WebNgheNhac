@@ -13,7 +13,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -25,11 +32,21 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
     // Lưu người dùng mới vào cơ sở dữ liệu sau khi mã hóa mật khẩu.
-    public void save(@NotNull User user) {
+    public void save(@NotNull User user, MultipartFile imageFile) throws IOException {
+        if(imageFile.isEmpty()){
+            user.setImage("/images/AnhMacDinh.jpg");
+        }
+        else {
+            user.setImage(saveImage(imageFile));
+        }
+
+        user.setPremium(false);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
         userRepository.save(user);
     }
-    // Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
+
+    /*// Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
     public void setDefaultRole(String username) {
         userRepository.findByUserName(username).ifPresentOrElse(
                 user -> {
@@ -41,7 +58,7 @@ public class UserService implements UserDetailsService {
                     throw new UsernameNotFoundException("User not found");
                 }
         );
-    }
+    }*/
     @Override
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException {
@@ -72,4 +89,14 @@ public class UserService implements UserDetailsService {
         return !userRepository.findByEmail(email).isPresent();
     }
 
+    public String saveImage(MultipartFile image) throws IOException {
+        File staticImagesFolder = new File("target/classes/static/images");
+        if (!staticImagesFolder.exists()) {
+            staticImagesFolder.mkdirs();
+        }
+        String fileName =image.getOriginalFilename();
+        Path path = Paths.get(staticImagesFolder.getAbsolutePath() + File.separator + fileName);
+        Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        return "/images/" + fileName;
+    }
 }

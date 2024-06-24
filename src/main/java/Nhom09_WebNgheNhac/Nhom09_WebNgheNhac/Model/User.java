@@ -23,13 +23,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
+@Data
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Setter
+    @Column(name = "userName",nullable = false, unique = true)
     @NotBlank(message = "Username không được bỏ trống")
     @Unique(message = "Username đã được dùng")
     @Size(min = 1, max = 50, message = "Username không quá 50 ký tự")
@@ -40,7 +42,7 @@ public class User implements UserDetails {
     @Size(min =5 , message = "FullName ít nhất 5 ký tự")
     private  String fullName;
 
-    @Column(nullable = false)
+    @Column(name = "password",nullable = false)
     @NotBlank(message = "Password không được bỏ trống")
     @Pattern(regexp = "^[A-Z].*(?=.*[0-9])(?=.*[@#$%^&+=]).{8,}$",message = "Password bắt đầu bằng chữ hoa, có 1 số và 1 kí tự đặc biệt")
     @Size(min = 8, message = "Password phải từ 8 ký tự")
@@ -63,6 +65,7 @@ public class User implements UserDetails {
     @Column(unique = true,nullable = false)
     @Length(min = 10, max = 10, message = "Phone phải có 10 số")
     @Pattern(regexp = "[0][0-9]*$", message = "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số")
+    @Unique(message = "PhoneNumber đã tồn tại")
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -75,6 +78,7 @@ public class User implements UserDetails {
     private String country;
 
     @Column(nullable = false)
+    @Getter
     private String image;
 
     private LocalDateTime timePremium;
@@ -107,14 +111,21 @@ public class User implements UserDetails {
                 .toList();
     }
 
+
+
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public String getUsername() {
         return userName;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
+    public String getUserName() {
+        return userName;
     }
 
     @Override

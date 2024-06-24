@@ -22,8 +22,8 @@ public class Invoice {
     private double totalAmount;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "serviceId", name = "serviceId")
-    private Service service;
+    @JoinColumn(referencedColumnName = "premiumId", name = "premiumId")
+    private Premium premium;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "userId" , name = "userId")
