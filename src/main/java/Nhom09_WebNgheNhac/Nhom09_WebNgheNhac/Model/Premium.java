@@ -10,8 +10,8 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "Service")
-public class Service {
+@Table(name = "Premium")
+public class Premium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
