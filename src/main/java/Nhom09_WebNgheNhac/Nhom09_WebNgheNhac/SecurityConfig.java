@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**","/css/**", "/js/**", "/", "/oauth/**", "/user/register", "/error", "/" ,"/user/login" ,"/category" , "/singer")
                         .permitAll() // Cho phép truy cập không cần xác thực.
-                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete" ,"/category/edit/**" , "/category/add" , "/category/delete" ,"/singer/edit/**" , "/singer/add" , "/singer/delete")
+                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete" ,"/category/edit/**" , "/category/add" , "/category/delete" ,"/singer/edit/**" , "/singer/add" , "/singer/delete","/categoryplaylist","/categoryplaylist/add","categoryplaylist/edit/**","/categoryplaylist/delete")
                         .hasAnyAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập.
                         .requestMatchers("/api/**")
                         .permitAll() // API mở cho mọi người dùng.
