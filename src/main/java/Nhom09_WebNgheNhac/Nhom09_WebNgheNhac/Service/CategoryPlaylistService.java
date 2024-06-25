@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.CategoryPlaylist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
 import jakarta.validation.constraints.NotNull;
@@ -35,4 +36,3 @@ public class CategoryPlaylistService {
         categoryPlaylistRepository.deleteById(id);
     }
 }
-

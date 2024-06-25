@@ -28,13 +28,7 @@
             </select>
         </div>
 
-        <div class="mb-3">
-            <label for="singer" class="form-label">Singer:</label>
-            <select th:field="*{singer}" class="form-control" id="singer">
-                <option th:each="singer : ${singers}" th:value="${singer.singerId}"
-                        th:text="${singer.singerName}"></option>
-            </select>
-        </div>
+
 
         <div class="mb-3">
             <label for="releaseDate" class="form-label">Release Date:</label>

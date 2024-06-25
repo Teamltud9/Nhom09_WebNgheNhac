@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.CategoryPlaylist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryPlaylistService;
 import com.mpatric.mp3agic.InvalidDataException;
@@ -26,7 +27,6 @@ public class CategoryPlaylistController {
         model.addAttribute("categoryplaylist", categoryPlaylistService.getAllCategoryPlaylist());
         return "categoryplaylist/list-categoryplaylist";
     }
-
     @PostConstruct
     private void addDefaultCategoryPlaylists() {
         List<String> defaultNames = List.of("Favorite-List", "Playlist", "Album");
@@ -40,7 +40,7 @@ public class CategoryPlaylistController {
     }
 
     @GetMapping("/add")
-    public String showAddPage(Model model) {
+    public String showAddPage(Model model){
         model.addAttribute("categoryplaylist", new CategoryPlaylist());
         return "categoryplaylist/add-categoryplaylist";
     }
@@ -55,9 +55,9 @@ public class CategoryPlaylistController {
     }
 
     @GetMapping("/edit/{categoryplaylistId}")
-    public String showUpdateForm(@PathVariable("categoryplaylistId") int categoryplaylistId, Model model) {
+    public String showUpdateForm(@PathVariable("categoryplaylistId") int categoryplaylistId, Model model ){
         CategoryPlaylist ex_categoryplaylist = categoryPlaylistService.getCategoryPlaylistById(categoryplaylistId).orElseThrow(() -> new IllegalArgumentException("Invalid Category-Playlist Id:" + categoryplaylistId));
-        model.addAttribute("categoryplaylist", ex_categoryplaylist);
+        model.addAttribute("categoryplaylist",ex_categoryplaylist);
         return "categoryplaylist/update-categoryplaylist";
     }
 

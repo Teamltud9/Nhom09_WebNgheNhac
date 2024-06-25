@@ -7,8 +7,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.Optional;
-
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class UniqueValidator implements ConstraintValidator<Unique, String> {
@@ -27,14 +27,30 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
-        boolean containsAtSymbol = s.contains("@");
-        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUsername(s);
+        final String PHONE_PATTERN = "[0][0-9]*$";
+        Pattern pattern = Pattern.compile(PHONE_PATTERN);
+        Matcher matcher =pattern.matcher(s);
+        Optional<User>  existingUser;
+        if( matcher.matches())
+            existingUser = userRepository.findByPhoneNumber(s);
+        else if (s.contains("@")) {
+            existingUser = userRepository.findByEmail(s);
+        }
+        else
+            existingUser = userRepository.findByUserName(s);
+
+        if(!existingUser.isEmpty())
+            return false;
+        return true;
+
+        /*boolean containsAtSymbol = s.contains("@");
+        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUserName(s);
 
 
          if(!existingUser.isEmpty()){
              return false;
          }
-         return true;
+         return true;*/
 
     }
 

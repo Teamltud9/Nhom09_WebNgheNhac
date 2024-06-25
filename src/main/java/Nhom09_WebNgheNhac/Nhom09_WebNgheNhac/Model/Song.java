@@ -5,11 +5,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -20,13 +23,13 @@ public class Song {
     private int songId;
 
     @Column(nullable = false)
-    @NotEmpty(message = "kkhfihf")
+    @NotEmpty(message = "Song Name không được để trống")
     private String songName;
 
     @Column(nullable = false)
-    @Past
+    @Past(message = "Release Date phải là ngày trong quá khứ")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull
+    @NotNull(message="Release Date không được để trống")
     private LocalDate releaseDate;
 
     @Column(nullable = false)
@@ -39,12 +42,21 @@ public class Song {
     @Column(nullable = false)
     private String filePath;
 
+    @Column(nullable = false)
+    private int likeCount;
+
+    @Column(nullable = false)
+    private Long createByUser ;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "categoryId")
+    @JoinColumn(referencedColumnName = "categoryId", name = "categoryId")
     private Category category;
 
+    @ManyToMany(mappedBy = "songs", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<User> users = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "singerId")
-    private Singer singer;
+    @ManyToMany(mappedBy = "songPlaylist", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<Playlist> playlists = new HashSet<>();
 }
