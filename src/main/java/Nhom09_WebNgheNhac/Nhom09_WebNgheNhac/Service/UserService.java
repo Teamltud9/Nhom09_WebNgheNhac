@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
+
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.RoleRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.UserRepository;
@@ -23,6 +24,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 @Service
 @Slf4j
 @Transactional
@@ -62,9 +65,9 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException {
-        var user = userRepository.findByUserName(username)
+        User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return org.springframework.security.core.userdetails.User
+       /* return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
                 .authorities(user.getAuthorities())
@@ -72,8 +75,25 @@ public class UserService implements UserDetailsService {
                 .accountLocked(!user.isAccountNonLocked())
                 .credentialsExpired(!user.isCredentialsNonExpired())
                 .disabled(!user.isEnabled())
-                .build();
+                .build();*/
+
+
+        return user;
+
     }
+
+    public void upSinger(User user){
+        Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role roles = roleRepository.findRoleByRoleId(Role.SINGER.value);
+        Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> role = Set.of(roles);
+
+
+        user.setRoles(role);
+        userRepository.save(user);
+    }
+    public Optional<User> getUserId(Long id) {
+        return userRepository.findById(id);
+    }
+
     // Tìm kiếm người dùng dựa trên tên đăng nhập.
     public Optional<User> findByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUserName(username);
@@ -87,6 +107,22 @@ public class UserService implements UserDetailsService {
     // Kiểm tra tính duy nhất của email.
     public boolean isEmailUnique(String email) {
         return !userRepository.findByEmail(email).isPresent();
+    }
+
+
+    public User editUser(User user) {
+        User existingsUser = userRepository.findById((Long) user.getUserId())
+                .orElseThrow(() -> new IllegalStateException("User with ID " +
+                        user.getUserId() + " does not exist."));
+        existingsUser.setUserName(user.getUserName());
+        existingsUser.setFullName(user.getFullName());
+        existingsUser.setPhoneNumber(user.getPhoneNumber());
+        existingsUser.setEmail(user.getEmail());
+        existingsUser.setImage(user.getImage());
+        existingsUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+
+
+        return userRepository.save(existingsUser);
     }
 
     public String saveImage(MultipartFile image) throws IOException {
