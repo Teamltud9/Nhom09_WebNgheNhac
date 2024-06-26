@@ -44,8 +44,7 @@ public class PremiumController {
     @GetMapping("/edit/{premiumId}")
     public String showUpdateForm(@PathVariable("premiumId") int premiumId, Model model)
     {
-        Premium premium = premiumService.findById(premiumId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid premium Id:" + premiumId));
+        Premium premium = premiumService.findById(premiumId);
         model.addAttribute("premium", premium);
         return "/premium/update-premium";
     }
@@ -67,8 +66,6 @@ public class PremiumController {
     @GetMapping("/delete/{premiumId}")
     public String deletedPremium(@PathVariable("premiumId") int premiumId, Model model)
     {
-        Premium premium = premiumService.findById(premiumId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid premium Id:" + premiumId));
         premiumService.deleteById(premiumId);
         model.addAttribute("premiums", premiumService.getAll());
         return "redirect:/premium";

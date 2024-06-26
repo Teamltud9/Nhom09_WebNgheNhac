@@ -33,6 +33,7 @@
                 <a th:href="@{/premium/edit/{id}(id=${premium.premiumId})}" class="btn btn-success btn-sm">Edit</a>
                 <a th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                <a th:href="@{/invoice/add/{premiumId}/{userId}(premiumId=${premium.premiumId}, userId=${userId})}" class="btn btn-success btn-sm">Purchase</a>
             </td>
         </tr>
         </tbody>

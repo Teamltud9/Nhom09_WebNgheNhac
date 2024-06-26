@@ -97,7 +97,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.EAGER) 
     @JoinTable(name = "Singer_Song",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "songId"))

@@ -21,9 +21,10 @@ public class PremiumService {
     {
         return premiumRepository.findAll();
     }
-    public Optional<Premium> findById(int id)
+    public Premium findById(int id)
     {
-        return premiumRepository.findById(id);
+        return premiumRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Category with ID does not exist."));
     }
     public void add(Premium premium){
         premiumRepository.save(premium);
@@ -42,10 +43,8 @@ public class PremiumService {
 
     public void deleteById(int id)
     {
-        if (!premiumRepository.existsById(id)) {
-            throw new IllegalStateException("Premium" + id + " does not exist.");
-        }
-        premiumRepository.deleteById(id);
+        var premium = premiumRepository.findById(id).orElseThrow(() -> new IllegalStateException("Premium does not exist."));;
+        premium.setDeleted(true);
     }
 
 }
