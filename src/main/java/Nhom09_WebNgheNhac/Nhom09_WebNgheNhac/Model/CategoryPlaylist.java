@@ -19,6 +19,8 @@ public class CategoryPlaylist {
     @NotEmpty(message = "Category Playlist Name không được để trống")
     private String categoryPlaylistName;
 
+    @Column(nullable = false)
+    private boolean isDelete;
 
     @OneToMany(mappedBy = "categoryPlaylist")
     private Set<Playlist> playlists;

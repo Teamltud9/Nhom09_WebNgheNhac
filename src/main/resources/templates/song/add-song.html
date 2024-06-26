@@ -49,8 +49,24 @@
         </div>
 
 
+        <div class="form-group">
+            <label for="artistSelect">Chọn nghệ sĩ:</label>
+            <select id="artistSelect" class="form-control"required>
+                <option th:each="singer : ${singers}" th:value="${singer.userId}"
+                        th:text="${singer.userName}"></option>
+            </select>
+            <button id="addArtistButton" type="button" class="btn btn-primary mt-2">Thêm</button>
+        </div>
 
-        <button type="submit" class="btn btn-primary">Create</button>
+
+        <div class="form-group">
+            <label for="selectedArtists">Nghệ sĩ đã chọn:</label>
+            <select id="selectedArtists" name="selectedArtists" class="form-control" ></select>
+        </div>
+
+        <input type="hidden" name="selectedNgheSiList" id="selectedNgheSiList" />
+
+        <button type="submit" class="btn btn-primary" id="submit">Create</button>
         <a th:href="@{/}" class="btn btn-link">Cancel</a>
     </form>
 </section>

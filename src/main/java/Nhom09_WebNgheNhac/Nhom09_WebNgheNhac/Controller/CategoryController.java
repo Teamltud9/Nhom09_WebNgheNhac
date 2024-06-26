@@ -38,6 +38,7 @@ public class CategoryController {
             return "/category/add-category";
         }
         category.setImage(categoryService.saveImage(imageFile));
+        category.setDelete(false);
         categoryService.addCategory(category);
         return "redirect:/category";
     }

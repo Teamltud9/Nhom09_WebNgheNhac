@@ -37,10 +37,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/**","/images/**","/css/**", "/js/**","/wwwroot/**", "/", "/oauth/**", "/user/register", "/error", "/" ,"/user/login" ,"/category" , "/singer")
+                        .requestMatchers("/user/**","/music/**","/images/**","/css/**", "/js/**","/wwwroot/**", "/", "/oauth/**", "/user/register", "/error", "/" ,"/user/login" ,"/category" )
                         .permitAll() // Cho phép truy cập không cần xác thực.
-                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete" ,"/category/edit/**" , "/category/add" , "/category/delete" ,"/singer/edit/**" , "/singer/add" , "/singer/delete")
-                        .hasAnyAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập.
+                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete")
+                        .hasAnyAuthority("SINGER")
+                        .requestMatchers("/category/edit/**" , "/category/add" , "/category/delete")
+                        .hasAuthority("ADMIN")// Chỉ cho phép ADMIN truy cập.
                         .requestMatchers("/api/**")
                         .permitAll() // API mở cho mọi người dùng.
                         .anyRequest().authenticated() // Bất kỳ yêu cầu nào khác cần xác thực.

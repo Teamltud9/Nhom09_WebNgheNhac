@@ -2,6 +2,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
@@ -11,6 +12,8 @@ import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +32,8 @@ public class SongController {
     private SongService songService;
     @Autowired
     private CategoryService categoryService;
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public String listSong(Model model) {
@@ -41,11 +45,18 @@ public class SongController {
     public String showAddForm(Model model) {
         model.addAttribute("song", new Song());
         model.addAttribute("categories", categoryService.getAlCatologies());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        List<User> singers = userService.getAllUser().stream()
+                .filter(p -> !p.getUserId().equals(user.getUserId()))
+                .filter(p -> p.getRoles().stream().anyMatch(role -> role.getRoleName().equals("SINGER")))
+                .collect(Collectors.toList());
+        model.addAttribute("singers", singers);
         return "/song/add-song";
     }
 
     @PostMapping("/song/add")
-    public String addProduct(@Valid Song song, BindingResult result,MultipartFile imageFile,MultipartFile fileMp3,Model model) throws InvalidDataException, UnsupportedTagException, IOException {
+    public String addProduct(@Valid Song song, BindingResult result,MultipartFile imageFile,MultipartFile fileMp3, String selectedNgheSiList,Model model) throws InvalidDataException, UnsupportedTagException, IOException {
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.getAlCatologies());
             return "/song/add-song";
@@ -53,7 +64,7 @@ public class SongController {
         song.setTime(songService.timeMusic(fileMp3));
         song.setImage(songService.saveImage(imageFile));
         song.setFilePath(songService.saveMusic(fileMp3));
-        songService.addSong(song);
+        songService.addSong(song,selectedNgheSiList);
         return "redirect:/";
     }
 
@@ -115,5 +126,12 @@ public class SongController {
     }
 
 
+    @GetMapping("/song/manage")
+    public String listQuanLi(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("songs", songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId())));
+        return "/song/manage-song";
+    }
 
 }

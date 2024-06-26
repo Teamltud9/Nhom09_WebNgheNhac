@@ -78,14 +78,18 @@ public class UserController {
 
     @PostMapping("/edit/{userId}")
     public String editUser(@PathVariable("userId") Long userId, @Valid User user, BindingResult result, MultipartFile imageFile, HttpServletRequest request, HttpServletResponse response) throws IOException, InvalidDataException, UnsupportedTagException {
+
         if (result.hasErrors()) {
+            int errorCount = result.getErrorCount();
             if (result.getFieldError("country") != null) {
                 result.rejectValue("country", "ignore");
             }
-            else{
+            if(errorCount>1){
                 user.setUserId(Long.valueOf(Math.toIntExact(userId)));
                 return "/users/edit";
             }
+
+
         }
 
         Optional<User> user1 = userService.getUserId(userId);
@@ -99,10 +103,8 @@ public class UserController {
 
 
         userService.editUser(user);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
+        userService.loadUserByUsername(user.getUserName());
+
         return "redirect:/";
 
     }
@@ -112,7 +114,7 @@ public class UserController {
     public String upSinger(@PathVariable("userId") Long userId) throws IOException, InvalidDataException, UnsupportedTagException {
 
         Optional<User> user = userService.getUserId(userId);
-        userService.upSinger(user.get());
+        userService.setRole(user.get());
 
         return "redirect:/";
     }

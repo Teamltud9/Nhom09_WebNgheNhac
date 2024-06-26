@@ -1,6 +1,7 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.RoleRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.UserRepository;
@@ -22,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +36,12 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+
+
+    public List<User> getAllUser(){
+        return userRepository.findAll();
+    }
+
     // Lưu người dùng mới vào cơ sở dữ liệu sau khi mã hóa mật khẩu.
     public void save(@NotNull User user, MultipartFile imageFile) throws IOException {
         if(imageFile.isEmpty()){
@@ -46,6 +54,7 @@ public class UserService implements UserDetailsService {
         user.setPremium(false);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
+        user.setDelete(false);
         userRepository.save(user);
     }
 
@@ -82,12 +91,16 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public void upSinger(User user){
-        Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role roles = roleRepository.findRoleByRoleId(Role.SINGER.value);
-        Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> role = Set.of(roles);
+    public void setRole(User user){
 
-
-        user.setRoles(role);
+        Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> roles = new HashSet<>();
+        if(user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.SINGER.value))){
+            roles.add(roleRepository.findRoleByRoleId(Role.USER.value));
+        }
+        else
+            roles.add(roleRepository.findRoleByRoleId(Role.SINGER.value));
+        user.setRoles(roles);
+        loadUserByUsername(user.getUserName());
         userRepository.save(user);
     }
     public Optional<User> getUserId(Long id) {
@@ -117,6 +130,7 @@ public class UserService implements UserDetailsService {
         existingsUser.setUserName(user.getUserName());
         existingsUser.setFullName(user.getFullName());
         existingsUser.setPhoneNumber(user.getPhoneNumber());
+        existingsUser.setBirthDate(user.getBirthDate());
         existingsUser.setEmail(user.getEmail());
         existingsUser.setImage(user.getImage());
         existingsUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));

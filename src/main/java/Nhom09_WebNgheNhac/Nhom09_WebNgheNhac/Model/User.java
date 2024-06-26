@@ -84,6 +84,12 @@ public class User implements UserDetails {
 
     private LocalDateTime timePremium;
 
+    private LocalDateTime timeSinger;
+
+    @Column(nullable = false)
+    private boolean isDelete;
+
+    @Column(nullable = false)
     private boolean isPremium;
 
     @OneToMany(mappedBy = "user")
@@ -98,10 +104,9 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToMany(fetch=FetchType.EAGER)
-    @JoinTable(name = "Singer_Song",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "songId"))
+
+
+    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL)
     private Set<Song> songs = new HashSet<>();
 
     @Override

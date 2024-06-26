@@ -5,6 +5,8 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -39,18 +41,17 @@ public class UniqueValidator implements ConstraintValidator<Unique, String> {
         else
             existingUser = userRepository.findByUserName(s);
 
-        if(!existingUser.isEmpty())
+        if(!existingUser.isEmpty()){
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User userLogin = (User) authentication.getPrincipal();
+            if(existingUser.get().getUserId().equals(userLogin.getUserId()))
+                return true;
             return false;
+        }
+
         return true;
 
-        /*boolean containsAtSymbol = s.contains("@");
-        Optional<User> existingUser = containsAtSymbol ? userRepository.findByEmail(s) : userRepository.findByUserName(s);
 
-
-         if(!existingUser.isEmpty()){
-             return false;
-         }
-         return true;*/
 
     }
 

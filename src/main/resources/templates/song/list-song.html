@@ -11,19 +11,19 @@
 <body>
 <section layout:fragment="content">
     <h1 style="text-align:center">Songs List</h1>
-    <div sec:authorize="hasAuthority('ADMIN')">
+   <!-- <div sec:authorize="hasAuthority('SINGER')">
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Song</a>
-    </div>
+    </div>-->
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
             <th>Image</th>
+            <td>Music</td>
             <th>Name</th>
             <th>Time</th>
-            <th>Singer</th>
             <th>Category</th>
-            <th sec:authorize="hasAuthority('ADMIN')">Actions</th>
+<!--            <th sec:authorize="hasAuthority('SINGER')" >Actions</th>-->
         </tr>
         </thead>
         <tbody>
@@ -32,17 +32,21 @@
                 <img th:src="@{${song.image}}"
                      alt="${song.songName}" width="50" height="50">
             </td>
+            <td>
+                <audio controls>
+                    <source th:src="@{${song.filePath}}" type="audio/mpeg">
+                </audio>
+            </td>
             <td th:text="${song.songName}"></td>
             <td th:text="${song.time}"></td>
 
-            <td th:text="${song.singer.singerName}"></td>
             <td th:text="${song.category.categoryName}"></td>
-            <td sec:authorize="hasAuthority('ADMIN')">
+            <!--<td sec:authorize="hasAuthority('SINGER')"  th:if="${#authentication.principal.userId} == ${song.createByUser}">
                 <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
 btn-success btn-sm">Edit</a>
                 <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
 btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
+            </td>-->
 
         </tr>
         </tbody>

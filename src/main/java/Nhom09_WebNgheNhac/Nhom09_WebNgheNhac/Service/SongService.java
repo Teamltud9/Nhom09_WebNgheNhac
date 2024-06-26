@@ -8,6 +8,8 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +32,37 @@ public class SongService {
 
     private final SongRepository songRepository;
 
+    private final UserRepository userRepository;
+
     public List<Song> searchSong(String query) {
         return songRepository.findBySongNameContainingIgnoreCase(query);
     }
     public List<Song> getAllSong(){
         return songRepository.findAll();
     }
-    public Song addSong(Song song) {
+    public Song addSong(Song song,String singers) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        song.setCreateByUser(userLogin.getUserId());
+
+        String[] parts = singers.split(",");
+
+        List<Long> selectedNgheSiIds = Arrays.stream(parts)
+                .map(Long::parseLong)
+                .toList();
+
+        Optional<User> user1 = userRepository.findById(userLogin.getUserId());
+        Set<User> singer = new HashSet<>();
+        singer.add(user1.get());
+        for (Long userId : selectedNgheSiIds){
+            Optional<User> user = userRepository.findById(userId);
+            singer.add(user.get());
+        }
+
+        song.setUsers(singer);
+        song.setDelete(false);
+
+
         return songRepository.save(song);
     }
     public Optional<Song> getSongId(int id) {
@@ -55,6 +79,9 @@ public class SongService {
         existingsSong.setTime(song.getTime());
         existingsSong.setImage(song.getImage());
         existingsSong.setFilePath(song.getFilePath());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        existingsSong.setCreateByUser(user.getUserId());
 
 
         return songRepository.save(existingsSong);

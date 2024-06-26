@@ -22,6 +22,9 @@ public class Premium {
     private String premiumName;
 
     @Column(nullable = false)
+    private boolean isDelete;
+
+    @Column(nullable = false)
     @NotNull(message = "Price không được để trống")
     @Positive(message = "Price phải là số dương")
     private double price;

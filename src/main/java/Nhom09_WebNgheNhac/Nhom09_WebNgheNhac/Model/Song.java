@@ -48,12 +48,17 @@ public class Song {
     @Column(nullable = false)
     private Long createByUser ;
 
+    @Column(nullable = false)
+    private boolean isDelete;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "categoryId", name = "categoryId")
     private Category category;
 
-    @ManyToMany(mappedBy = "songs", cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @ManyToMany(fetch=FetchType.EAGER)
+    @JoinTable(name = "Singer_Song",
+            joinColumns = @JoinColumn(name = "songId"),
+            inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> users = new HashSet<>();
 
     @ManyToMany(mappedBy = "songPlaylist", cascade = CascadeType.ALL)

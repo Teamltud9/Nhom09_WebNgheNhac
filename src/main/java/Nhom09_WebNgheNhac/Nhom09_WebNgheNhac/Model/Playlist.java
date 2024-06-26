@@ -27,6 +27,9 @@ public class Playlist {
     @Column(nullable = false)
     private String image;
 
+    @Column(nullable = false)
+    private boolean isDelete;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "categoryPlaylistId", name = "categoryPlaylistId")
     private CategoryPlaylist categoryPlaylist;
