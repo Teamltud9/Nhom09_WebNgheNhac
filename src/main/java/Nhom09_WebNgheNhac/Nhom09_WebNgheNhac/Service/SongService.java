@@ -58,7 +58,7 @@ public class SongService {
             Optional<User> user = userRepository.findById(userId);
             singer.add(user.get());
         }
-
+        song.setPremium(!user1.get().getCountry().equals("Vietnam"));
         song.setUsers(singer);
         song.setDelete(false);
 

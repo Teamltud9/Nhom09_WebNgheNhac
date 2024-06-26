@@ -22,12 +22,16 @@ public class Premium {
     private String premiumName;
 
     @Column(nullable = false)
-    private boolean isDelete;
-
-    @Column(nullable = false)
     @NotNull(message = "Price không được để trống")
     @Positive(message = "Price phải là số dương")
     private double price;
+
+    @Column(nullable = false)
+    @NotNull(message = "duration không được để trống")
+    private int duration;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "premium")
     private Set<Invoice> invoices;

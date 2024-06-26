@@ -51,6 +51,9 @@ public class Song {
     @Column(nullable = false)
     private boolean isDelete;
 
+    @Column(nullable = false)
+    private boolean isPremium;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "categoryId", name = "categoryId")
     private Category category;
