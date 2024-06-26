@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${title != null ? title : 'Playlist List'}">Playlist List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container mt-4">
+        <h2>Playlist List</h2>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>User</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="playlist : ${playlists}">
+                <td th:text="${playlist.playlistId}"></td>
+                <td th:text="${playlist.playlistName}"></td>
+                <td th:text="${playlist.quantity}"></td>
+                <td th:text="${playlist.categoryPlaylist.name}"></td>
+                <td th:text="${playlist.user.username}"></td>
+                <td>
+                    <a th:href="@{/playlists/{id}(id=${playlist.playlistId})}" class="btn btn-info btn-sm">View</a>
+                    <a th:href="@{/playlists/{id}/edit(id=${playlist.playlistId})}" class="btn btn-warning btn-sm">Edit</a>
+                    <a th:href="@{/playlists/{id}/delete(id=${playlist.playlistId})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this playlist?')">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/playlists/new" class="btn btn-primary">Create New Playlist</a>
+    </div>
+</section>
+</body>
+</html>
