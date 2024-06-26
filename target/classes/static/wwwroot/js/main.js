@@ -1,14 +1,10 @@
 $(document).ready(function () {
         var countrySelect = $('#country');
 
-        // Gọi API để lấy danh sách quốc gia
         $.ajax({
             url: 'https://countriesnow.space/api/v0.1/countries',
             method: 'GET',
             success: function (data) {
-                console.log('Thành công: ', data);
-
-                // Đổ dữ liệu vào dropdown
                 data.data.forEach(function (item) {
                     countrySelect.append($('<option>', {
                         value: item.country,
@@ -16,10 +12,7 @@ $(document).ready(function () {
                     }));
                 });
             },
-            error: function (xhr, status, error) {
-                console.error('Lỗi khi lấy dữ liệu quốc gia:', error);
-                // Xử lý lỗi nếu cần thiết (ví dụ: hiển thị thông báo cho người dùng)
-            }
+
         });
 
         $("#search-input").on("keyup", function () {

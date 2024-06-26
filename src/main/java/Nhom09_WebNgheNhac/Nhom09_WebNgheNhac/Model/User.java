@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,6 +71,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @NotNull(message = "Birth Date không được bỏ trống")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Past(message = "Birth Date phải là ngày trong quá khứ")
     private LocalDate birthDate;
 
@@ -78,7 +80,6 @@ public class User implements UserDetails {
     private String country;
 
     @Column(nullable = false)
-    @Getter
     private String image;
 
     private LocalDateTime timePremium;
@@ -110,7 +111,6 @@ public class User implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .toList();
     }
-
 
 
 
