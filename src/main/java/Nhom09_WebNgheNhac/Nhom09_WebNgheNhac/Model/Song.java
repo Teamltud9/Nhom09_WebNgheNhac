@@ -45,7 +45,7 @@ public class Song {
     @Column(nullable = false)
     private int likeCount;
 
-    @Column(nullable = false)
+    @Column
     private Long createByUser ;
 
     @ManyToOne
