@@ -58,13 +58,15 @@ public class Song {
     @JoinColumn(referencedColumnName = "categoryId", name = "categoryId")
     private Category category;
 
+    @OneToMany(mappedBy = "song")
+    private Set<Report> reports;
+
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name = "Singer_Song",
             joinColumns = @JoinColumn(name = "songId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> users = new HashSet<>();
 
-    @ManyToMany(mappedBy = "songPlaylist", cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @ManyToMany(mappedBy = "songPlaylist", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Playlist> playlists = new HashSet<>();
 }

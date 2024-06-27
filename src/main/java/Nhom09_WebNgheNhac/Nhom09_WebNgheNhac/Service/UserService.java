@@ -1,14 +1,20 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.PlaylistRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.RoleRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.UserRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +42,10 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PlaylistRepository playlistRepository;
+    @Autowired
+    private CategoryPlaylistRepository categoryPlaylistRepository;
 
 
     public List<User> getAllUser(){
@@ -55,6 +65,17 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
         user.setDelete(false);
+        user.setCountReport(0);
+
+        Playlist playlist = new Playlist();
+        playlist.setUser(user);
+        playlist.setDelete(false);
+        playlist.setQuantity(0);
+        playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(1).get());
+        playlist.setPlaylistName("Yêu thích");
+
+
+        playlistRepository.save(playlist);
         userRepository.save(user);
     }
 
@@ -100,8 +121,13 @@ public class UserService implements UserDetailsService {
         else
             roles.add(roleRepository.findRoleByRoleId(Role.SINGER.value));
         user.setRoles(roles);
-        loadUserByUsername(user.getUserName());
+
+
         userRepository.save(user);
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, currentAuth.getCredentials(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
     public Optional<User> getUserId(Long id) {
         return userRepository.findById(id);
@@ -135,7 +161,9 @@ public class UserService implements UserDetailsService {
         existingsUser.setImage(user.getImage());
         existingsUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 
-
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(existingsUser, currentAuth.getCredentials(), existingsUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
         return userRepository.save(existingsUser);
     }
 

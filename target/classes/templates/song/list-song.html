@@ -5,8 +5,18 @@
       layout:decorate="~{layout}">
 <head>
     <title th:text="${title} ?: 'Products'">Products</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .heart-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff0000;
+    font-size: 24px;
+}
+    </style>
 </head>
 <body>
 <section layout:fragment="content">
@@ -19,10 +29,10 @@
         <thead class="table-dark">
         <tr>
             <th>Image</th>
-            <td>Music</td>
             <th>Name</th>
             <th>Time</th>
             <th>Category</th>
+            <th sec:authorize="isAuthenticated()">Like</th>
 <!--            <th sec:authorize="hasAuthority('SINGER')" >Actions</th>-->
         </tr>
         </thead>
@@ -32,15 +42,18 @@
                 <img th:src="@{${song.image}}"
                      alt="${song.songName}" width="50" height="50">
             </td>
-            <td>
-                <audio controls>
-                    <source th:src="@{${song.filePath}}" type="audio/mpeg">
-                </audio>
+            <td >
+                <a th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
             </td>
-            <td th:text="${song.songName}"></td>
             <td th:text="${song.time}"></td>
-
             <td th:text="${song.category.categoryName}"></td>
+            <td sec:authorize="isAuthenticated()">
+                <a th:href="@{/song/like/{id}(id=${song.songId})}">
+                    <button id="heartButton" class="heart-button" >
+                        <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
+                        <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
+                    </button></a>
+            </td>
             <!--<td sec:authorize="hasAuthority('SINGER')"  th:if="${#authentication.principal.userId} == ${song.createByUser}">
                 <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
 btn-success btn-sm">Edit</a>

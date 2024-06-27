@@ -24,7 +24,6 @@ public class Playlist {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
     private String image;
 
     @Column(nullable = false)

@@ -45,19 +45,24 @@ public class SongService {
         User userLogin = (User) authentication.getPrincipal();
         song.setCreateByUser(userLogin.getUserId());
 
-        String[] parts = singers.split(",");
 
-        List<Long> selectedNgheSiIds = Arrays.stream(parts)
-                .map(Long::parseLong)
-                .toList();
 
         Optional<User> user1 = userRepository.findById(userLogin.getUserId());
         Set<User> singer = new HashSet<>();
         singer.add(user1.get());
-        for (Long userId : selectedNgheSiIds){
-            Optional<User> user = userRepository.findById(userId);
-            singer.add(user.get());
+
+        if(!singers.isEmpty()){
+            String[] parts = singers.split(",");
+
+            List<Long> selectedNgheSiIds = Arrays.stream(parts)
+                    .map(Long::parseLong)
+                    .toList();
+            for (Long userId : selectedNgheSiIds){
+                Optional<User> user = userRepository.findById(userId);
+                singer.add(user.get());
+            }
         }
+
         song.setPremium(!user1.get().getCountry().equals("Vietnam"));
         song.setUsers(singer);
         song.setDelete(false);
