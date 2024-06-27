@@ -22,7 +22,7 @@ public class PremiumController {
     @GetMapping("")
     public String listPremium(Model model)
     {
-         model.addAttribute("premiums",premiumService.getAll());
+         model.addAttribute("premiums",premiumService.getAll().stream().filter(p-> !p.isDeleted()));
          return "/premium/list-premiums";
     }
 

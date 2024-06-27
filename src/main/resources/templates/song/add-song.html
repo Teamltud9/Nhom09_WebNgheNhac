@@ -50,8 +50,8 @@
 
 
         <div class="form-group">
-            <label for="artistSelect">Chọn nghệ sĩ:</label>
-            <select id="artistSelect" class="form-control"required>
+            <label for="artistSelect">Chọn nghệ sĩ hợp tác:</label>
+            <select id="artistSelect" class="form-control">
                 <option th:each="singer : ${singers}" th:value="${singer.userId}"
                         th:text="${singer.userName}"></option>
             </select>

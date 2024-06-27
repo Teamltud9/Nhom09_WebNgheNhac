@@ -92,6 +92,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean isPremium;
 
+    @Column(nullable = false)
+    private int countReport;
+
     @OneToMany(mappedBy = "user")
     private Set<Playlist> playlists;
 
