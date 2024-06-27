@@ -48,11 +48,13 @@
             <td th:text="${song.time}"></td>
             <td th:text="${song.category.categoryName}"></td>
             <td sec:authorize="isAuthenticated()">
-                <a th:href="@{/song/like/{id}(id=${song.songId})}">
+<!--                <a th:href="@{/song/like/{id}(id=${song.songId})}">
                     <button id="heartButton" class="heart-button" >
                         <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
                         <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
-                    </button></a>
+                    </button></a>-->
+                <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+                   class="btn btn-success btn-sm">Report</a>
             </td>
             <!--<td sec:authorize="hasAuthority('SINGER')"  th:if="${#authentication.principal.userId} == ${song.createByUser}">
                 <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn

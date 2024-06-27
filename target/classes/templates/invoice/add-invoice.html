@@ -13,7 +13,8 @@
     <form th:action="@{/invoice/add/{premiumId}/{userId}(premiumId=${invoice.premium.premiumId}, userId=${invoice.user.userId})}" th:object="${invoice}" method="post">
         <div class="mb-3">
             <label for="paymentDate" class="form-label">Create On:</label>
-            <input type="text" id="paymentDate" th:field="*{paymentDate}" class="form-control" th:value="${formattedPaymentDate}" disabled/>
+            <input type="text" id="paymentDate" th:field="*{paymentDate}" class="form-control"
+                   th:value="${formattedPaymentDate}" disabled/>
             <input type="hidden" th:field="*{paymentDate}" th:value="${#temporals.format(invoice.paymentDate, 'dd/MM/yyyy HH:mm')}" />
             <div class="text-danger" th:if="${#fields.hasErrors('paymentDate')}"
                  th:errors="*{paymentDate}"></div>
