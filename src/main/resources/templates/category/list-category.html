@@ -29,7 +29,10 @@
             <img th:src="@{${category.image}}"
                  th:alt="@{${category.categoryName}}" width="50" height="50">
             </td>
-            <td th:text="${category.categoryName}"></td>
+                <td th:text="${category.categoryName}">
+                <a th:href="@{/category/detail/{id}(id=${category.categoryId})}">
+                </a>
+                </td>
 
             <td  sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/category/edit/{id}(id=${category.categoryId})}" class="btn btn-success btn-sm">Edit</a>

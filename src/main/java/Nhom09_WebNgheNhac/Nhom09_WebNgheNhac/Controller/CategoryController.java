@@ -79,4 +79,11 @@ public class CategoryController {
         model.addAttribute("categories", categoryService.getAlCatologies());
         return "redirect:/category";
     }
+    @GetMapping("/detail/{categoryId}")
+    public String viewCategoryDetail(@PathVariable("categoryId") int categoryId, Model model) {
+        Category category = categoryService.getCategoryDetailById(categoryId);
+        model.addAttribute("category", category);
+        model.addAttribute("songs", category.getSongs());
+        return "/category/detail-category";
+    }
 }

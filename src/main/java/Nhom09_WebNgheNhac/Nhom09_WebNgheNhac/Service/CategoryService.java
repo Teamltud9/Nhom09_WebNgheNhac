@@ -1,6 +1,7 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +19,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final SongService songService;
 
     public List<Category> getAlCatologies(){
         return categoryRepository.findAll();
@@ -68,5 +68,13 @@ public class CategoryService {
         Path path = Paths.get(staticImagesFolder.getAbsolutePath() + File.separator + fileName);
         Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         return "/images/" + fileName;
+    }
+
+    public Category getCategoryDetailById(int id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Category with ID " + id + " does not exist."));
+        Set<Song> songs = new HashSet<>(songService.findByCategoryId(id));
+        category.setSongs(songs);
+        return category;
     }
 }
