@@ -142,7 +142,7 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isDelete;
     }
     @Override
     public boolean isCredentialsNonExpired() {
@@ -150,7 +150,7 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isDelete;
     }
     @Override
     public boolean equals(Object o) {

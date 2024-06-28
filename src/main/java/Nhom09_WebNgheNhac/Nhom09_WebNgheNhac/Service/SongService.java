@@ -92,10 +92,9 @@ public class SongService {
     }
 
     public void deleteSongById(int id) {
-        if (!songRepository.existsById(id)) {
-            throw new IllegalStateException("Song with ID " + id + " does not exist.");
-        }
-        songRepository.deleteById(id);
+        Song song = songRepository.findById(id).orElseThrow(() -> new IllegalStateException("Song does not exist."));
+        song.setDelete(true);
+        songRepository.save(song);
     }
 
 

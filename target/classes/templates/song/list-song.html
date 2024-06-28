@@ -53,6 +53,8 @@
                         <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
                         <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
                     </button></a>
+                <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+                   class="btn btn-success btn-sm">Report</a>
             </td>
             <!--<td sec:authorize="hasAuthority('SINGER')"  th:if="${#authentication.principal.userId} == ${song.createByUser}">
                 <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
