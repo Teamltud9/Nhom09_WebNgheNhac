@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,11 +71,9 @@ public class CategoryService {
         return "/images/" + fileName;
     }
 
-    public Category getCategoryDetailById(int id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Category with ID " + id + " does not exist."));
-        Set<Song> songs = new HashSet<>(songService.findByCategoryId(id));
-        category.setSongs(songs);
-        return category;
+    public Set<Song> getCategoryDetailById(int id) {
+
+        Set<Song> song = songService.getAllSong().stream().filter(p->p.getCategory().getCategoryId() == id).collect(Collectors.toSet());
+        return song;
     }
 }

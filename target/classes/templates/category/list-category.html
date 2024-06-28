@@ -29,8 +29,9 @@
             <img th:src="@{${category.image}}"
                  th:alt="@{${category.categoryName}}" width="50" height="50">
             </td>
-                <td th:text="${category.categoryName}">
+                <td >
                 <a th:href="@{/category/detail/{id}(id=${category.categoryId})}">
+                    <p th:text="${category.categoryName}"></p>
                 </a>
                 </td>
 
