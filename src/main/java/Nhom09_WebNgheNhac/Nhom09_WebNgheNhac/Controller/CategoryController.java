@@ -1,7 +1,9 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/category")
@@ -19,6 +23,7 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+
 
     @GetMapping("")
     public String listCategory(Model model) {
@@ -78,5 +83,13 @@ public class CategoryController {
         categoryService.deleteCategoryById(categoryId);
         model.addAttribute("categories", categoryService.getAlCatologies());
         return "redirect:/category";
+    }
+    @GetMapping("/detail/{categoryId}")
+    public String viewCategoryDetail(@PathVariable("categoryId") int categoryId, Model model) {
+        Optional<Category> category = categoryService.getCategoryById(categoryId);
+        Set<Song> songs = categoryService.getCategoryDetailById(categoryId);
+        model.addAttribute("category", category.get());
+        model.addAttribute("songs", songs);
+        return "/category/detail-category";
     }
 }

@@ -46,7 +46,6 @@ public class SongService {
         song.setCreateByUser(userLogin.getUserId());
 
 
-
         Optional<User> user1 = userRepository.findById(userLogin.getUserId());
         Set<User> singer = new HashSet<>();
         singer.add(user1.get());
@@ -141,6 +140,8 @@ public class SongService {
         }
     }
 
-
+    public List<Song> findByCategoryId(int categoryId) {
+        return songRepository.findByCategory_CategoryId(categoryId);
+    }
 
 }
