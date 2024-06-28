@@ -2,7 +2,6 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
-import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.PlaylistRepository;
@@ -12,8 +11,10 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,10 +30,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 
 @Service
 @Slf4j
@@ -79,19 +82,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    /*// Gán vai trò mặc định cho người dùng dựa trên tên người dùng.
-    public void setDefaultRole(String username) {
-        userRepository.findByUserName(username).ifPresentOrElse(
-                user -> {
-
-                    user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
-                    userRepository.save(user);
-                },
-                () -> {
-                    throw new UsernameNotFoundException("User not found");
-                }
-        );
-    }*/
     @Override
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException {
@@ -112,7 +102,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public void setRole(User user){
+    public Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> setRole(User user){
 
         Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> roles = new HashSet<>();
         if(user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.SINGER.value))){
@@ -120,14 +110,9 @@ public class UserService implements UserDetailsService {
         }
         else
             roles.add(roleRepository.findRoleByRoleId(Role.SINGER.value));
-        user.setRoles(roles);
 
+        return roles;
 
-        userRepository.save(user);
-        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
-
-        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, currentAuth.getCredentials(), user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     }
     public Optional<User> getUserId(Long id) {
         return userRepository.findById(id);
@@ -159,7 +144,12 @@ public class UserService implements UserDetailsService {
         existingsUser.setBirthDate(user.getBirthDate());
         existingsUser.setEmail(user.getEmail());
         existingsUser.setImage(user.getImage());
-        existingsUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        if(user.getPassword().startsWith("$2a$") && user.getPassword().length()==60)
+            existingsUser.setPassword(user.getPassword());
+        else{
+            existingsUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
+
 
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
         UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(existingsUser, currentAuth.getCredentials(), existingsUser.getAuthorities());
@@ -176,5 +166,39 @@ public class UserService implements UserDetailsService {
         Path path = Paths.get(staticImagesFolder.getAbsolutePath() + File.separator + fileName);
         Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         return "/images/" + fileName;
+    }
+
+    @Scheduled(fixedRate = 30000)
+    public void checkTime() {
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            if(user.getTimePremium()!=null){
+                if (user.getTimePremium().isBefore(LocalDateTime.now())) {
+                    user.setTimeSinger(null);
+                    user.setPremium(false);
+                    userRepository.save(user);
+
+                }
+            }
+            if(user.getTimeSinger()!=null){
+                if (user.getTimeSinger().isBefore(LocalDateTime.now())) {
+                    Set<Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Role> roles = new HashSet<>();
+                    roles.add(roleRepository.findRoleByRoleId(Role.USER.value));
+                    user.setRoles(roles);
+                    user.setTimeSinger(null);
+                    userRepository.save(user);
+
+                }
+            }
+
+
+
+
+        }
+
+
+
+
+
     }
 }

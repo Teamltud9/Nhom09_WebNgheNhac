@@ -26,6 +26,13 @@ public class PremiumController {
          return "/premium/list-premiums";
     }
 
+    @GetMapping("/addtime")
+    public String listNangCap(Model model)
+    {
+        model.addAttribute("premiums",premiumService.getAll().stream().filter(p->!p.getPremiumName().contains("Premium") ));
+        return "/premium/list-premiums";
+    }
+
     @GetMapping("/add")
     public String showAddForm(Model model)
     {

@@ -39,13 +39,17 @@
                     <a class="nav-link text-white active" aria-current="page"
                        href="/invoice">Invoice</a>
                 </li>
+                <li class="nav-item" sec:authorize="hasAuthority('SINGER')">
+                    <a href="/premium/addtime"
+                       class="btn btn-success ">Gia hạn</a></td>
+                </li>
             </ul>
 
             <div>
                 <form id="search-form" class="d-flex" th:action="@{/search}" method="get">
                     <div class="input-group">
                         <input id="search-input" class="form-control me-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" name="query" required>
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <button class="btn btn-success" type="submit">Search</button>
                         <div id="search-results" class="dropdown-content w-100"></div>
                     </div>
                 </form>
@@ -53,7 +57,6 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                 <li class="nav-item d-flex align-items-center"
                     sec:authorize="isAuthenticated()">
-                    <a th:href="@{/user/upSinger/{id}(id=${#authentication.principal.userId})}" class="navbar-text text-white">Up singer</a>
                     <a th:href="@{/user/edit/{id}(id=${#authentication.principal.userId})}">
                     <img
                          th:src="${#authentication.principal.image}"

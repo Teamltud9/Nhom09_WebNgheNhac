@@ -13,6 +13,7 @@ import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ public class SongController {
     @Autowired
     private PlaylistService playlistService;
 
+
     @GetMapping
     public String listSong(Model model) {
         model.addAttribute("songs", songService.getAllSong());
@@ -47,7 +49,9 @@ public class SongController {
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             User user = (User) authentication.getPrincipal();
-
+            Optional<User> user1 = userService.getUserId(user.getUserId());
+            UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user1.get(), authentication.getCredentials(), user1.get().getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(newAuthentication);
             Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
 
              songIds = playlist.getSongPlaylist()
@@ -199,4 +203,6 @@ public class SongController {
         playlistService.update(playlist);
         return "redirect:/";
     }
+
+
 }
