@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Form Thêm Report</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="content" class="container mt-5">
+    <h1 class="mb-4">Form Report</h1>
+    <form th:action="@{/report/add/{songId}/{userId}(songId=${report.song.songId}, userId=${report.createByUser})}"
+          th:object="${report}" method="post">
+        <div class="mb-3" hidden>
+            <label for="createByUser" class="form-label">Content:</label>
+            <input type="text" id="createByUser" th:field="*{createByUser}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('createByUser')}"
+                 th:errors="*{createByUser}"></div>
+        </div>
+        <div class="mb-3" hidden>
+            <label for="song.songId" class="form-label">Song:</label>
+            <input type="text" id="song.songId" th:field="*{song.songId}" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label for="creationDate" class="form-label">Create On: </label>
+            <input type="text" id="creationDate" class="form-control" th:field="*{creationDate}"
+                   th:value="${creationDate}" required>
+            <input type="hidden" th:field="*{creationDate}" th:value="${#temporals.format(report.creationDate, 'dd/MM/yyyy HH:mm')}" />
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">Content: </label>
+            <input type="text" id="content" class="form-control" th:field="*{content}" required>
+            <div class="text-danger" th:if="${#fields.hasErrors('content')}"
+                 th:errors="*{content}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</section>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
+</body>
+</html>

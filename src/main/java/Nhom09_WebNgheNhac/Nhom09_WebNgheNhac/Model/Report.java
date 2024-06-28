@@ -26,6 +26,9 @@ public class Report {
     @Column(nullable = false)
     private Long createByUser ;
 
+    @Column(nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "songId", name = "songId")
     private Song song;

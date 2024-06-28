@@ -1,6 +1,7 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +19,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final SongService songService;
 
     public List<Category> getAlCatologies(){
         return categoryRepository.findAll();
@@ -68,5 +69,11 @@ public class CategoryService {
         Path path = Paths.get(staticImagesFolder.getAbsolutePath() + File.separator + fileName);
         Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         return "/images/" + fileName;
+    }
+
+    public Set<Song> getCategoryDetailById(int id) {
+
+        Set<Song> song = songService.getAllSong().stream().filter(p->p.getCategory().getCategoryId() == id).collect(Collectors.toSet());
+        return song;
     }
 }

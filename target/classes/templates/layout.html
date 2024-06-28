@@ -27,11 +27,11 @@
                     <a class="nav-link text-white active" aria-current="page"
                        href="/category">Category</a>
                 </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
+                <li class="nav-item" sec:authorize="isAuthenticated()&&!hasAuthority('ADMIN')">
                     <a class="nav-link text-white active" aria-current="page"
                        href="/song/manage">Quản lý</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAuthority('USER')">
+                <li class="nav-item" sec:authorize="hasAuthority('USER')||hasAuthority('ADMIN')">
                     <a class="nav-link text-white active" aria-current="page"
                        href="/premium">Premium</a>
                 </li>
@@ -42,6 +42,10 @@
                 <li class="nav-item" sec:authorize="hasAuthority('SINGER')">
                     <a href="/premium/addtime"
                        class="btn btn-success ">Gia hạn</a></td>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link text-white active" aria-current="page"
+                       href="/report">Report</a>
                 </li>
             </ul>
 

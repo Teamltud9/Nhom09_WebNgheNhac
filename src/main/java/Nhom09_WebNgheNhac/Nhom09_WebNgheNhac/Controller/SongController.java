@@ -52,6 +52,8 @@ public class SongController {
             Optional<User> user1 = userService.getUserId(user.getUserId());
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user1.get(), authentication.getCredentials(), user1.get().getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+
+
             Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
 
              songIds = playlist.getSongPlaylist()

@@ -190,10 +190,10 @@ public class UserService implements UserDetailsService {
 
                 }
             }
-
-
-
-
+            if(user.getCountReport()>3){
+                user.setDelete(true);
+                userRepository.save(user);
+            }
         }
 
 
