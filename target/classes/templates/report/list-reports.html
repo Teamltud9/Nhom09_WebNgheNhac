@@ -27,9 +27,13 @@
             <td th:text="${report.creationDate}"></td>
             <td th:text="${report.createByUser}"></td>
             <td th:text="${report.song.songName}"></td>
-            <td sec:authorize="hasAuthority('ADMIN')">
-                <a th:href="@{/report/delete/{id}(id=${report.reportId})}"
+            <td>
+                <a th:href="@{/report/delete/{reportId}/{userId}(reportId=${report.reportId}, userId=${report.song.createByUser})}"
                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure lock this song?')">Lock</a>
+            </td>
+            <td>
+                <a th:href="@{/report/denied/{reportId}(reportId=${report.reportId))}"
+                   class="btn btn-danger btn-sm" onclick="return confirm('Are you sure lock this song?')">Denied</a>
             </td>
         </tr>
         </tbody>
