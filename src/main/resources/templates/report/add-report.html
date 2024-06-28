@@ -18,7 +18,10 @@
             <div class="text-danger" th:if="${#fields.hasErrors('createByUser')}"
                  th:errors="*{createByUser}"></div>
         </div>
-
+        <div class="mb-3" hidden>
+            <label for="song.songId" class="form-label">Song:</label>
+            <input type="text" id="song.songId" th:field="*{song.songId}" class="form-control"/>
+        </div>
         <div class="mb-3">
             <label for="creationDate" class="form-label">Create On: </label>
             <input type="text" id="creationDate" class="form-control" th:field="*{creationDate}"

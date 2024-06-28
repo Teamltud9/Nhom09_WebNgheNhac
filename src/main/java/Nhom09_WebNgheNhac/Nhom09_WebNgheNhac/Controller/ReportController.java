@@ -8,6 +8,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.ReportService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,8 +23,11 @@ import java.time.LocalDateTime;
 @Controller
 @RequestMapping("/report")
 public class ReportController {
+    @Autowired
     private ReportService reportService;
+    @Autowired
     private SongService songService;
+    @Autowired
     private UserService userService;
 
     @GetMapping("")
@@ -66,11 +70,24 @@ public class ReportController {
     {
         User reportedUser = userService.getUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User"));
+        Report report = reportService.findById(reportId);
         reportedUser.setCountReport(reportedUser.getCountReport() + 1);
         userService.editUser(reportedUser);
+        songService.deleteSongById(report.getSong().getSongId());
         reportService.deleteById(reportId);
         model.addAttribute("reports", reportService.getAll()
                                 .stream().filter(r -> !r.isDeleted()).toList());
+        return "redirect:/report";
+    }
+
+    @GetMapping("/denied/{reportId}")
+    public String deniedReport(@PathVariable("reportId") int reportId, Model model)
+    {
+
+        Report report = reportService.findById(reportId);
+        reportService.deleteById(reportId);
+        model.addAttribute("reports", reportService.getAll()
+                .stream().filter(r -> !r.isDeleted()).toList());
         return "redirect:/report";
     }
 
