@@ -161,5 +161,22 @@ public class PlaylistController {
             throw new IllegalArgumentException("Invalid playlist Id:" + playlistId);
         }
     }
+
+    @PostMapping("/remove-song/{playlistId}/{songId}")
+    public String removeSongFromPlaylist(@RequestParam int playlistId,
+                                         @RequestParam int songId,
+                                         RedirectAttributes redirectAttributes,
+                                         Authentication authentication) {
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
+
+            playlistService.removeSongFromPlaylist(playlistId, songId, currentUser);
+            redirectAttributes.addFlashAttribute("message", "Song removed from playlist successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/playlist/detail/" + playlistId;
+    }
 }
 

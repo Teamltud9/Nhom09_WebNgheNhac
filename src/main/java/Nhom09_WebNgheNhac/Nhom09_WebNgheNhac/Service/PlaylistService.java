@@ -95,4 +95,22 @@ public class PlaylistService {
             playlistRepository.save(playlist);
         }
     }
+    public void removeSongFromPlaylist(int playlistId, int songId, User currentUser) {
+        Playlist playlist = getPlaylistById(playlistId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid playlist Id:" + playlistId));
+
+        if (!playlist.getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("You don't have permission to modify this playlist");
+        }
+
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
+
+        if (playlist.getSongPlaylist().remove(song)) {
+            playlist.setQuantity(playlist.getQuantity() - 1);
+            playlistRepository.save(playlist);
+        } else {
+            throw new IllegalStateException("Song is not in the playlist");
+        }
+    }
 }

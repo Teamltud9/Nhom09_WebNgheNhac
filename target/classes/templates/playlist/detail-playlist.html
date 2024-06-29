@@ -20,6 +20,7 @@
             <th>Name</th>
             <th>Time</th>
             <th>Category</th>
+            <th sec:authorize="isAuthenticated()">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,13 @@
             </td>
             <td th:text="${song.time}"></td>
             <td th:text="${song.category.categoryName}"></td>
+            <td sec:authorize="isAuthenticated()">
+                <form th:action="@{/playlist/remove-song/{id1}(id1=${playlist.playlistId})/{id}(id=${song.songId}}" method="post">
+                    <input type="hidden" name="playlistId" th:value="${playlist.playlistId}">
+                    <input type="hidden" name="songId" th:value="${song.songId}">
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
