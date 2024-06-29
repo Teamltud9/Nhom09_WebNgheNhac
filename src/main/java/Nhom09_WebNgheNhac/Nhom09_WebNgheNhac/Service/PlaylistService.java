@@ -57,7 +57,8 @@ public class PlaylistService {
 
 
     public Playlist likePlaylist(Long userId, int CategoryPlaylistId){
-        Optional<Playlist> playlist = getAll().stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==CategoryPlaylistId && p.getUser().getUserId().equals(userId)).findFirst();
+        Optional<Playlist> playlist = getAll().stream()
+                .filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==CategoryPlaylistId && p.getUser().getUserId().equals(userId)).findFirst();
         return playlist.get();
     }
 
@@ -81,6 +82,12 @@ public class PlaylistService {
         ex_playlist.setPlaylistName(playlist.getPlaylistName());
         ex_playlist.setImage(playlist.getImage());
         playlistRepository.save(ex_playlist);
+    }
+
+    public List<Playlist> getAlbum()
+    {
+        return playlistRepository.findAll().stream()
+                .filter(p -> p.getCategoryPlaylist().getCategoryPlaylistId() == 3).toList();
     }
 
     public void deletedById(int id) {
