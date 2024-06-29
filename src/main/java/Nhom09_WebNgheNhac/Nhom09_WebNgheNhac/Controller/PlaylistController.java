@@ -5,6 +5,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PlaylistService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,6 +53,14 @@ public class PlaylistController {
         return "redirect:/login";
     }
 
+    @GetMapping("/album")
+    public String showAlbums(Model model)
+    {
+        model.addAttribute("albums", playlistService.getAlbum()
+                                .stream().filter(p -> !p.isDelete()).toList());
+        return "playlist/list-album";
+    }
+
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("playlist", new Playlist());
@@ -64,15 +74,24 @@ public class PlaylistController {
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = (User) authentication.getPrincipal();
+
         playlist.setUser(userLogin);
         playlist.setImage(playlistService.saveImage(imageFile));
         playlist.setDelete(false);
         playlist.setQuantity(0);
-        playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(2).get());
+        if(userLogin.getRoles().stream().anyMatch(p -> p.getRoleId().equals(Role.SINGER.value)))
+        {
+            playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(3).get());
+        }
+        else
+        {
+            playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(2).get());
+        }
         playlistService.add(playlist);
 
         return "redirect:/playlist";
     }
+
 
     @GetMapping("/edit/{playlistId}")
     public String showUpdateForm(@PathVariable("playlistId") int playlistId, Model model, Authentication authentication) {
@@ -139,22 +158,22 @@ public class PlaylistController {
     @GetMapping("/detail/{playlistId}")
     public String getPlaylistDetails(@PathVariable("playlistId") int playlistId, Model model, Authentication authentication) {
         Optional<Playlist> playlistOptional = playlistService.getPlaylistById(playlistId);
-
         if (playlistOptional.isPresent()) {
             Playlist playlist = playlistOptional.get();
 
             // Kiểm tra quyền truy cập
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
-            if (!playlist.getUser().getUserId().equals(currentUser.getUserId())) {
-                throw new AccessDeniedException("You don't have permission to view this playlist");
+            if (playlistOptional.get().getCategoryPlaylist().getCategoryPlaylistId() != 3)
+            {
+                if (!playlist.getUser().getUserId().equals(currentUser.getUserId()))
+                {
+                    throw new AccessDeniedException("You don't have permission to view this playlist");
+                }
             }
-
             Set<Song> songs = playlist.getSongPlaylist();
-
             model.addAttribute("playlist", playlist);
             model.addAttribute("songs", songs);
-
             return "playlist/detail-playlist";
         } else {
             throw new IllegalArgumentException("Invalid playlist Id:" + playlistId);
