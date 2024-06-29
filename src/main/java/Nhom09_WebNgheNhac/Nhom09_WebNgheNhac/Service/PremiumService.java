@@ -43,8 +43,10 @@ public class PremiumService {
 
     public void deleteById(int id)
     {
-        var premium = premiumRepository.findById(id).orElseThrow(() -> new IllegalStateException("Premium does not exist."));;
-        premium.setDeleted(true);
+        var premium = premiumRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Premium does not exist."));
+        premium.setDeleted(!premium.isDeleted());
+        premiumRepository.save(premium);
     }
 
 }

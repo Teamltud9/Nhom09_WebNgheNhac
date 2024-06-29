@@ -14,24 +14,24 @@
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
-            <th>Content</th>
-            <th>Report On</th>
-            <th>Report By</th>
-            <th>Reported Song</th>
-            <th>Action</th>
+            <th class="text-center">Content</th>
+            <th class="text-center">Report On</th>
+            <th class="text-center">Report By</th>
+            <th class="text-center">Reported Song</th>
+            <th class="text-center">Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="report : ${reports}">
-            <td th:text="${report.content}"></td>
-            <td th:text="${#temporals.format(report.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${report.createByUser}"></td>
-            <td th:text="${report.song.songName}"></td>
+            <td class="align-middle" th:text="${report.content}"></td>
+            <td class="align-middle" th:text="${report.creationDate}"></td>
+            <td class="align-middle" th:text="${report.createByUser}"></td>
+            <td class="align-middle" th:text="${report.song.songName}"></td>
             <td>
                 <a th:href="@{/report/delete/{reportId}/{userId}(reportId=${report.reportId}, userId=${report.song.createByUser})}"
-                   class="btn btn-danger btn-sm" onclick="return confirm('Are you sure lock this song?')">Lock</a>
+                   class="btn btn-danger btn-sm p-2 fs-6 fw-medium px-3" onclick="return confirm('Are you sure lock this song?')" style="float: left;">Lock</a>
                 <a th:href="@{/report/denied/{reportId}(reportId=${report.reportId})}"
-                   class="btn btn-danger btn-sm" onclick="return confirm('Are you sure denied report?')">Denied</a>
+                   class="btn btn-success btn-sm p-2 fs-6 fw-medium" onclick="return confirm('Are you sure deny this song?')" style="float: right;">Denied</a>
             </td>
         </tr>
         </tbody>

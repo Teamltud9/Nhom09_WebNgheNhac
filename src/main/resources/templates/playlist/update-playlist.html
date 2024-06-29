@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Playlist</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <section layout:fragment="content">
+        <h2 class="mb-4 text-center">Edit Playlist</h2>
+        <form class="border border-2 p-5 rounded-3" th:action="@{/playlist/edit/{playlistId}(playlistId=${playlist.playlistId})}" method="post" enctype="multipart/form-data" th:object="${playlist}">
+            <div class="mb-3">
+                <label for="playlistName" class="form-label">Playlist Name</label>
+                <input type="text" class="form-control" id="playlistName" th:field="*{playlistName}" required>
+                <span th:if="${#fields.hasErrors('playlistName')}" th:errors="*{playlistName}" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="imageFile" class="form-label">Playlist Image</label>
+                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                <small class="form-text text-muted">Leave empty to keep the current image</small>
+            </div>
+            <div class="mb-3" style="float: right">
+                <button type="submit" class="btn btn-primary">Update Playlist</button>
+                <a th:href="@{/playlist}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+</div>
+</body>
+</html>

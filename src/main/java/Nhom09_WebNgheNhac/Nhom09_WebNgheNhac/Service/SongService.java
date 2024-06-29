@@ -154,7 +154,7 @@ public class SongService {
     }
 
     public List<String> SearchSuggestions(String query) {
-        List<Song> songs = getAllSong();
+        List<Song> songs = getAllSong().stream().filter(p->!p.isDelete()).toList();
         List<String> suggestions = new ArrayList<>();
 
         songs.stream()

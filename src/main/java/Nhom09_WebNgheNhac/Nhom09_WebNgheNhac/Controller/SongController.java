@@ -45,7 +45,7 @@ public class SongController {
 
     @GetMapping
     public String listSong(Model model) {
-        model.addAttribute("songs", songService.getAllSong());
+        model.addAttribute("songs", songService.getAllSong().stream().filter(s -> !s.isDelete()).toList());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
@@ -61,6 +61,13 @@ public class SongController {
                     .stream()
                     .map(Song::getSongId)
                     .toList();
+
+             List<Playlist> playlists = playlistService.getPlaylistsByUser(user);
+             model.addAttribute("playlists", playlists);
+                songIds = playlist.getSongPlaylist()
+                        .stream()
+                        .map(Song::getSongId)
+                        .toList();
         }
 
 
@@ -71,7 +78,8 @@ public class SongController {
     @GetMapping("/song/add")
     public String showAddForm(Model model) {
         model.addAttribute("song", new Song());
-        model.addAttribute("categories", categoryService.getAlCatologies());
+        model.addAttribute("categories", categoryService.getAlCatologies()
+                                                        .stream().filter(c -> !c.isDelete()).toList());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         List<User> singers = userService.getAllUser().stream()
@@ -86,7 +94,8 @@ public class SongController {
     @PostMapping("/song/add")
     public String addProduct(@Valid Song song, BindingResult result,MultipartFile imageFile,MultipartFile fileMp3, String selectedNgheSiList,Model model) throws InvalidDataException, UnsupportedTagException, IOException {
         if (result.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAlCatologies());
+            model.addAttribute("categories", categoryService.getAlCatologies()
+                                                .stream().filter(c -> !c.isDelete()).toList());
             return "/song/add-song";
         }
         song.setTime(songService.timeMusic(fileMp3));
@@ -105,7 +114,8 @@ public class SongController {
         User user = (User) authentication.getPrincipal();
 
         boolean check;
-        if(!user.getUserId().equals(song.getCreateByUser())&&!user.getRoles().stream().anyMatch(p->p.getRoleId().equals(Role.ADMIN.value))){
+        if(!user.getUserId().equals(song.getCreateByUser()) && !user.getRoles().stream()
+                .anyMatch(p -> p.getRoleId().equals(Role.ADMIN.value)) ){
             if(song.isPremium()){
                 if(user.isPremium())
                     check= true;
@@ -222,7 +232,4 @@ public class SongController {
         playlistService.update(playlist);
         return "redirect:/";
     }
-
-
-
 }

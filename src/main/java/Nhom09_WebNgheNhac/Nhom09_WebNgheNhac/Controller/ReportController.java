@@ -72,7 +72,7 @@ public class ReportController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid User"));
         Report report = reportService.findById(reportId);
         reportedUser.setCountReport(reportedUser.getCountReport() + 1);
-        userService.editUser(reportedUser);
+        userService.updateUser(reportedUser);
         songService.deleteSongById(report.getSong().getSongId());
         reportService.deleteById(reportId);
         model.addAttribute("reports", reportService.getAll()

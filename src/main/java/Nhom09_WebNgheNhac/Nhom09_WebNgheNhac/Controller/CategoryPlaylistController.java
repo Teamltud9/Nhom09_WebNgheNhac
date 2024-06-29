@@ -77,12 +77,4 @@ public class CategoryPlaylistController {
         return "redirect:/categoryplaylist";
     }
 
-    @GetMapping("/delete/{categoryplaylistId}")
-    public String deleteCategory(@PathVariable("categoryplaylistId") int categoryplaylistId, Model model) {
-        CategoryPlaylist categoryPlaylist = categoryPlaylistService.getCategoryPlaylistById(categoryplaylistId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category-playlist Id:" + categoryplaylistId));
-        categoryPlaylistService.deleteCategoryPlaylistById(categoryplaylistId);
-        model.addAttribute("categories", categoryPlaylistService.getAllCategoryPlaylist());
-        return "redirect:/categoryplaylist";
-    }
 }

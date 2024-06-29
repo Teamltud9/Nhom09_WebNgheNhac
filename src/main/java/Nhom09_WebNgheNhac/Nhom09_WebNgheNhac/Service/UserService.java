@@ -76,6 +76,8 @@ public class UserService implements UserDetailsService {
         playlist.setQuantity(0);
         playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(1).get());
         playlist.setPlaylistName("Yêu thích");
+        playlist.setImage("/images/AnhMacDinh.jpg");
+
 
 
         playlistRepository.save(playlist);
@@ -155,6 +157,12 @@ public class UserService implements UserDetailsService {
         UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(existingsUser, currentAuth.getCredentials(), existingsUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
         return userRepository.save(existingsUser);
+    }
+
+    public User updateUser(User user){
+
+
+        return userRepository.save(user);
     }
 
     public String saveImage(MultipartFile image) throws IOException {

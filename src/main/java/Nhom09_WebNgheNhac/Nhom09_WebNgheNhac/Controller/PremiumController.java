@@ -2,9 +2,13 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Premium;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PremiumService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +26,14 @@ public class PremiumController {
     @GetMapping("")
     public String listPremium(Model model)
     {
-         model.addAttribute("premiums",premiumService.getAll().stream().filter(p-> !p.isDeleted()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        if(userLogin.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.ADMIN.value))){
+            model.addAttribute("premiums",premiumService.getAll());
+        }
+        else{
+            model.addAttribute("premiums",premiumService.getAll().stream().filter(p -> !p.isDeleted()).toList());
+        }
          return "/premium/list-premiums";
     }
 
