@@ -33,10 +33,12 @@
                 <td th:text="${playlist.playlistName}"></td>
                 <td th:text="${playlist.quantity}"></td>
                 <td>
-                    <a th:href="@{/playlist/detail/{id}(id=${playlist.playlistId})}" class="btn btn-info btn-sm">View</a>
-                    <a th:href="@{/playlist/edit/{id}(id=${playlist.playlistId})}" class="btn btn-warning btn-sm">Edit</a>
-                    <a th:href="@{/playlist/delete/{id}(id=${playlist.playlistId})}" class="btn btn-danger btn-sm"
+                    <div class="d-flex justify-content-around align-items-center">
+                    <a th:href="@{/playlist/detail/{id}(id=${playlist.playlistId})}" class="p-2 fw-medium btn btn-info btn-sm">View</a>
+                    <a th:href="@{/playlist/edit/{id}(id=${playlist.playlistId})}" class="p-2 fw-medium btn btn-warning btn-sm">Edit</a>
+                    <a th:href="@{/playlist/delete/{id}(id=${playlist.playlistId})}" class="p-2 fw-medium btn btn-danger btn-sm"
                        onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
                 </td>
             </tr>
             </tbody>
