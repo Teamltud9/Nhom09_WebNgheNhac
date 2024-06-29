@@ -54,6 +54,9 @@ public class SongController {
                     .stream()
                     .map(Song::getSongId)
                     .toList();
+
+             List<Playlist> playlists = playlistService.getPlaylistsByUser(user);
+             model.addAttribute("playlists", playlists);
         }
 
 

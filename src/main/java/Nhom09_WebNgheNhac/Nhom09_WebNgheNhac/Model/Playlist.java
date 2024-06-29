@@ -3,6 +3,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,9 +39,11 @@ public class Playlist {
     private User user;
 
 
-    @ManyToMany(fetch= FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Playlist_Song",
             joinColumns = @JoinColumn(name = "playlistId"),
             inverseJoinColumns = @JoinColumn(name = "songId"))
     private Set<Song> songPlaylist = new HashSet<>();
+
 }
