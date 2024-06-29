@@ -9,21 +9,23 @@
 </head>
 <body>
     <section layout:fragment="content" class="container mt-5">
-        <h1 class="mb-4">Form Category</h1>
-        <form th:action="@{/category/add}" th:object="${category}" enctype="multipart/form-data" method="post">
+        <h1 class="mb-4 text-center">Form Add Category</h1>
+        <form class="border border-2 p-5 rounded-3" th:action="@{/category/add}" th:object="${category}" enctype="multipart/form-data" method="post">
             <div class="mb-3">
-                <label for="categoryName" class="form-label">Category Name:</label>
-                <input type="text" id="categoryName" th:field="*{categoryName}" class="form-control"/>
+                <label for="categoryName" class="form-label fw-medium fs-5">Category Name:</label>
+                <input placeholder="Nhập category muốn thêm" type="text" id="categoryName" th:field="*{categoryName}" class="form-control"/>
                 <div class="text-danger" th:if="${#fields.hasErrors('categoryName')}"
                      th:errors="*{categoryName}"></div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Images: </label>
+                <label class="form-label fw-medium fs-5">Images: </label>
                 <input type="file" class="form-control" name="imageFile"  accept="image/*" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="flex justify-content-end py-4 align-items-center mb-3">
+                <button style="float: right;" type="submit" class="btn btn-primary p-3 fw-medium text-uppercase">Submit</button>
+            </div>
         </form>
     </section>
     <script

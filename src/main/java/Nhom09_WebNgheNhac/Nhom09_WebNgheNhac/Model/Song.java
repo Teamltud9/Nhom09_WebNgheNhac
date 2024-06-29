@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -67,6 +68,7 @@ public class Song {
             inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> users = new HashSet<>();
 
-    @ManyToMany(mappedBy = "songPlaylist", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "songPlaylist", fetch = FetchType.LAZY)
     private Set<Playlist> playlists = new HashSet<>();
 }

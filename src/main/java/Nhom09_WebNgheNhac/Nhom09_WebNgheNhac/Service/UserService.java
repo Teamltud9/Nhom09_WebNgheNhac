@@ -73,6 +73,8 @@ public class UserService implements UserDetailsService {
         playlist.setQuantity(0);
         playlist.setCategoryPlaylist(categoryPlaylistRepository.findById(1).get());
         playlist.setPlaylistName("Yêu thích");
+        playlist.setImage("/images/AnhMacDinh.jpg");
+
 
 
         playlistRepository.save(playlist);
