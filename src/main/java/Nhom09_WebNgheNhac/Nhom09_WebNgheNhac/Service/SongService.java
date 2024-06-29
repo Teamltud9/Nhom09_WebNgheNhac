@@ -150,6 +150,7 @@ public class SongService {
 
         return songs.stream()
                 .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()) || title.getUsers().stream().anyMatch(p->p.getFullName().toLowerCase().contains(query.toLowerCase())))
+                .filter(s->!s.isDelete())
                 .collect(Collectors.toList());
     }
 

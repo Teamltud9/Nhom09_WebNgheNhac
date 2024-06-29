@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lỗi Không Có Quyền Truy Cập</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .error-container h1 {
+            color: #ff0000;
+        }
+        .error-container p {
+            color: #333;
+        }
+        .error-container a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .error-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Lỗi Không Có Quyền Truy Cập</h1>
+    <p>Bạn không có quyền truy cập vào trang này</p>
+    <a  th:href="@{/}">Quay lại trang chủ</a>
+</div>
+</body>
+</html>

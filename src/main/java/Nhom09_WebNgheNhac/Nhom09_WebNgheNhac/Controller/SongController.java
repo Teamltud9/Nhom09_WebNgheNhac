@@ -13,6 +13,7 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,12 +63,6 @@ public class SongController {
                     .map(Song::getSongId)
                     .toList();
 
-             List<Playlist> playlists = playlistService.getPlaylistsByUser(user);
-             model.addAttribute("playlists", playlists);
-                songIds = playlist.getSongPlaylist()
-                        .stream()
-                        .map(Song::getSongId)
-                        .toList();
         }
 
 
@@ -111,22 +106,31 @@ public class SongController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-
         boolean check;
-        if(!user.getUserId().equals(song.getCreateByUser()) && !user.getRoles().stream()
-                .anyMatch(p -> p.getRoleId().equals(Role.ADMIN.value)) ){
-            if(song.isPremium()){
-                if(user.isPremium())
-                    check= true;
+
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = (User) authentication.getPrincipal();
+            if(!user.getUserId().equals(song.getCreateByUser()) && !user.getRoles().stream()
+                    .anyMatch(p -> p.getRoleId().equals(Role.ADMIN.value)) ){
+                if(song.isPremium()){
+                    if(user.isPremium())
+                        check= true;
+                    else
+                        check = false;
+                }
                 else
-                    check = false;
+                    check = true;
             }
             else
                 check = true;
         }
-        else
-            check = true;
+        else{
+            if(song.isPremium()){
+                check = false;
+            }
+            else
+                check = true;
+        }
 
         model.addAttribute("check", check);
         model.addAttribute("song", song);
@@ -137,6 +141,11 @@ public class SongController {
     public String showUpdateForm(@PathVariable("songId") int songId, Model model) {
         Song song = songService.getSongId(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        if (!song.getCreateByUser().equals(userLogin.getUserId())) {
+            return "redirect:/error";
+        }
         model.addAttribute("categories", categoryService.getAlCatologies());
         model.addAttribute("song", song);
         return "/song/update-song";
@@ -171,9 +180,14 @@ public class SongController {
     }
 
     @GetMapping("/song/delete/{songId}")
-    public String deleteCategory(@PathVariable("songId") int songId, Model model) {
+    public String deleteSong(@PathVariable("songId") int songId, Model model) {
         Song song = songService.getSongId(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        if (!song.getCreateByUser().equals(userLogin.getUserId())) {
+            return "redirect:/error";
+        }
         songService.deleteSongById(songId);
         return "redirect:/";
     }
@@ -232,4 +246,10 @@ public class SongController {
         playlistService.update(playlist);
         return "redirect:/";
     }
+
+    @GetMapping("/error")
+    public String error(){
+        return "/error";
+    }
+
 }
