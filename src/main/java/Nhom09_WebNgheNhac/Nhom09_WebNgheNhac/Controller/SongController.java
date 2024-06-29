@@ -170,12 +170,28 @@ public class SongController {
 
     @GetMapping("/search")
     public String Search(@NonNull Model model, String query) {
+        model.addAttribute("songs", songService.searchSong(query));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Integer> songIds = new ArrayList<>();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = (User) authentication.getPrincipal();
 
-        List<Song> songs = songService.getAllSong();
-        model.addAttribute("songs", songs.stream()
-                .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()))
-                .collect(Collectors.toList()));
+            Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
+
+            songIds = playlist.getSongPlaylist()
+                    .stream()
+                    .map(Song::getSongId)
+                    .toList();
+        }
+
+        model.addAttribute("songIds", songIds);
         return "/song/list-song";
+    }
+
+    @GetMapping("/SearchSuggestions")
+    @ResponseBody
+    public List<String> searchSuggestions(String query) {
+        return songService.SearchSuggestions(query);
     }
 
 
@@ -205,6 +221,7 @@ public class SongController {
         playlistService.update(playlist);
         return "redirect:/";
     }
+
 
 
 }
