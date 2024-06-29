@@ -52,10 +52,10 @@ public class CategoryService {
 
 
     public void deleteCategoryById(int id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new IllegalStateException("Category with ID " + id + " does not exist.");
-        }
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Category does not exist."));
+        category.setDelete(!category.isDelete());
+        categoryRepository.save(category);
     }
 
 
