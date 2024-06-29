@@ -1,6 +1,7 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Constants.Provider;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.RoleRepository;
@@ -33,9 +34,9 @@ import java.util.Set;
 @Transactional
 public class UserService implements UserDetailsService {
     @Autowired
-    private UserRepository userRepository;
+    private static UserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
+    private static RoleRepository roleRepository;
 
 
     public List<User> getAllUser(){
@@ -55,6 +56,19 @@ public class UserService implements UserDetailsService {
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
         user.setDelete(false);
+        userRepository.save(user);
+    }
+
+    public static void saveOauthUser(String email, @NotNull String username, String img) {
+        if(userRepository.findByUserName(username).isPresent())
+            return;
+        var user = new User();
+        user.setUserName(username);
+        user.setImage(img);
+        user.setEmail(email);
+        user.setPassword(new BCryptPasswordEncoder().encode(username));
+        user.setProvider(Provider.GOOGLE.value);
+        user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
         userRepository.save(user);
     }
 

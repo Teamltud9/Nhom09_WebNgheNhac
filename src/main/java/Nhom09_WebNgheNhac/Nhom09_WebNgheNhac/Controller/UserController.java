@@ -43,7 +43,10 @@ public class UserController {
         return "users/login";
     }
 
-
+    @GetMapping("/oauth2/authorization/google")
+    public String oauth2() {
+        return "users/login";
+    }
 
     @GetMapping("/register")
     public String register(@NotNull Model model) {

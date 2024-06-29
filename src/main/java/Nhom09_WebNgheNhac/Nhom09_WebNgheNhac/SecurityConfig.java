@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.OAuthService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 @Configuration // Đánh dấu lớp này là một lớp cấu hình cho Spring Context.
 @EnableWebSecurity // Kích hoạt tính năng bảo mật web của Spring Security.
 @RequiredArgsConstructor // Lombok tự động tạo constructor có tham số cho tất cả các trường final.
 
 public class SecurityConfig {
+    private final OAuthService oAuthService;
     private final UserService userService; // Tiêm UserService vào lớp cấu hình này.
     @Bean // Đánh dấu phương thức trả về một bean được quản lý bởi Spring Context.
     public UserDetailsService userDetailsService() {
@@ -60,6 +63,27 @@ public class SecurityConfig {
                         .loginProcessingUrl("/user/login") // URL xử lý đăng nhập.
                         .defaultSuccessUrl("/") // Trang sau đăng nhập thành công.
                         .failureUrl("/user/login?error") // Trang đăng nhập thất bại.
+                        .permitAll()
+                )
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/user/login")  // Trang đăng nhập tùy chỉnh.
+                        .defaultSuccessUrl("/")  // URL sau khi đăng nhập thành công.
+                        .failureUrl("/user/login?error")  // URL khi đăng nhập thất bại.
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint
+                                        .userService(oAuthService)
+                        )
+                        .successHandler(
+
+                                (request, response,
+                                 authentication) -> {
+                                    var oidcUser =
+                                            (DefaultOidcUser) authentication.getPrincipal();
+                                    userService.saveOauthUser(oidcUser.getEmail(), oidcUser.getName(),oidcUser.getPicture());
+                                    response.sendRedirect("/");
+                                }
+                        )
+
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe

@@ -98,6 +98,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<Invoice> invoices;
 
+    @Column(name = "provider", length = 50)
+    private String provider;
+
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "userId"),
