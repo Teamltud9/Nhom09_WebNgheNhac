@@ -1,13 +1,16 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PlaylistService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/category")
@@ -28,18 +33,23 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private PlaylistService playlistService;
 
     @GetMapping("")
     public String listCategory(Model model)
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User userLogin = (User) authentication.getPrincipal();
-        if(userLogin.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.ADMIN.value))){
-            model.addAttribute("categories", categoryService.getAlCatologies());
+        if(!(authentication instanceof AnonymousAuthenticationToken)) {
+            User userLogin = (User) authentication.getPrincipal();
+            if (userLogin.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.ADMIN.value))) {
+                model.addAttribute("categories", categoryService.getAlCatologies());
+            } else {
+                model.addAttribute("categories", categoryService.getAlCatologies().stream().filter(p -> !p.isDelete()).toList());
+            }
         }
-        else{
+        else
             model.addAttribute("categories", categoryService.getAlCatologies().stream().filter(p -> !p.isDelete()).toList());
-        }
         return "/category/list-category";
     }
 
@@ -99,7 +109,22 @@ public class CategoryController {
     @GetMapping("/detail/{categoryId}")
     public String viewCategoryDetail(@PathVariable("categoryId") int categoryId, Model model) {
         Optional<Category> category = categoryService.getCategoryById(categoryId);
-        Set<Song> songs = categoryService.getCategoryDetailById(categoryId);
+        Set<Song> songs = categoryService.getCategoryDetailById(categoryId).stream().filter(p->!p.isDelete()).collect(Collectors.toSet());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Integer> songIds = new ArrayList<>();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = (User) authentication.getPrincipal();
+            Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
+
+            songIds = playlist.getSongPlaylist()
+                    .stream()
+                    .map(Song::getSongId)
+                    .toList();
+        }
+
+
+        model.addAttribute("songIds", songIds);
         model.addAttribute("category", category.get());
         model.addAttribute("songs", songs);
         return "/category/detail-category";

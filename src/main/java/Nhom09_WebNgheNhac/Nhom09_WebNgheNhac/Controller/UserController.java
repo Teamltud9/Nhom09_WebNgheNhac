@@ -15,9 +15,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -103,19 +101,12 @@ public class UserController {
 
 
         userService.editUser(user);
-        userService.loadUserByUsername(user.getUserName());
 
         return "redirect:/";
 
     }
 
 
-    @GetMapping("/upSinger/{userId}")
-    public String upSinger(@PathVariable("userId") Long userId) throws IOException, InvalidDataException, UnsupportedTagException {
 
-        Optional<User> user = userService.getUserId(userId);
-        userService.setRole(user.get());
 
-        return "redirect:/";
-    }
 }

@@ -34,9 +34,9 @@ public class SongService {
 
     private final UserRepository userRepository;
 
-    public List<Song> searchSong(String query) {
-        return songRepository.findBySongNameContainingIgnoreCase(query);
-    }
+
+
+
     public List<Song> getAllSong(){
         return songRepository.findAll();
     }
@@ -140,8 +140,38 @@ public class SongService {
         }
     }
 
+
     public List<Song> findByCategoryId(int categoryId) {
         return songRepository.findByCategory_CategoryId(categoryId);
     }
+    public List<Song> searchSong(String query) {
 
+        List<Song> songs = getAllSong();
+
+        return songs.stream()
+                .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()) || title.getUsers().stream().anyMatch(p->p.getFullName().toLowerCase().contains(query.toLowerCase())))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> SearchSuggestions(String query) {
+        List<Song> songs = getAllSong().stream().filter(p->!p.isDelete()).toList();
+        List<String> suggestions = new ArrayList<>();
+
+        songs.stream()
+                .filter(song -> song.getSongName().toLowerCase().contains(query.toLowerCase()) ||
+                        song.getUsers().stream().anyMatch(user -> user.getFullName().toLowerCase().contains(query.toLowerCase())))
+                .forEach(song -> {
+                    if (song.getSongName().toLowerCase().contains(query.toLowerCase())) {
+                        suggestions.add(song.getSongName());
+                    }
+                    else{
+                        song.getUsers().stream()
+                                .filter(user -> user.getFullName().toLowerCase().contains(query.toLowerCase()))
+                                .forEach(user -> suggestions.add(user.getFullName()));
+                    }
+
+                });
+
+        return suggestions;
+    }
 }

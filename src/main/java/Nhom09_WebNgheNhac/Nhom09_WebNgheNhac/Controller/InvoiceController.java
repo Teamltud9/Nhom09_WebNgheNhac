@@ -72,8 +72,27 @@ public class InvoiceController {
         Premium premium = premiumService.findById(premiumId);
         User user = userService.getUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
-        user.setPremium(true);
-        user.setTimePremium(LocalDateTime.now().plusDays(premium.getDuration()));
+
+        if(!premium.getPremiumName().contains("Premium")){
+            if(user.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.SINGER.value)))
+                user.setTimeSinger(user.getTimeSinger().plusDays(premium.getDuration()));
+            else{
+
+                user.setTimeSinger(LocalDateTime.now().plusDays(premium.getDuration()));
+                user.setRoles(userService.setRole(user));
+            }
+
+        }
+        else {
+            if(user.isPremium()){
+                user.setTimePremium(user.getTimePremium().plusDays(premium.getDuration()));
+            }
+            else {
+                user.setPremium(true);
+                user.setTimePremium(LocalDateTime.now().plusDays(premium.getDuration()));
+            }
+        }
+
         userService.editUser(user);
         invoice.setTotalAmount(premium.getPrice());
         invoice.setPremium(premium);
