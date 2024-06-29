@@ -35,7 +35,7 @@
             <th class="text-center" sec:authorize="hasAuthority('ADMIN')">ACTION</th>
         </tr>
         </thead>
-        <tbody class="border-0">
+        <tbody>
         <tr th:each="category : ${categories}">
             <td class="ImageTH text-center align-middle">
                 <a class="text-decoration-none text-body-tertiary fw-medium" th:href="@{/category/detail/{id}(id=${category.categoryId})}">
