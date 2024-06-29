@@ -3,6 +3,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PlaylistService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
@@ -104,7 +105,7 @@ public class SongController {
         User user = (User) authentication.getPrincipal();
 
         boolean check;
-        if(!user.getUserId().equals(song.getCreateByUser())){
+        if(!user.getUserId().equals(song.getCreateByUser())&&!user.getRoles().stream().anyMatch(p->p.getRoleId().equals(Role.ADMIN.value))){
             if(song.isPremium()){
                 if(user.isPremium())
                     check= true;
@@ -168,17 +169,6 @@ public class SongController {
     }
 
 
-    @GetMapping("/search")
-    public String Search(@NonNull Model model, String query) {
-
-        List<Song> songs = songService.getAllSong();
-        model.addAttribute("songs", songs.stream()
-                .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()))
-                .collect(Collectors.toList()));
-        return "/song/list-song";
-    }
-
-
     @GetMapping("/song/manage")
     public String listQuanLi(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -205,6 +195,7 @@ public class SongController {
         playlistService.update(playlist);
         return "redirect:/";
     }
+
 
 
 }
