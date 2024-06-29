@@ -63,6 +63,8 @@ public class SongController {
                     .map(Song::getSongId)
                     .toList();
 
+            List<Playlist> playlists = playlistService.getPlaylistsByUser(user).stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()!=1).toList();
+            model.addAttribute("playlists", playlists);
         }
 
 
@@ -233,15 +235,21 @@ public class SongController {
         Song song = songService.getSongId(songId).stream().findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
 
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
         Set<Song> listSong = playlist.getSongPlaylist();
-        if(listSong.stream().anyMatch(p->p.getSongId() == song.getSongId()))
+        if(listSong.stream().anyMatch(p->p.getSongId() == song.getSongId())){
             listSong.removeIf(p ->p.getSongId() == song.getSongId());
-        else
+            song.setLikeCount(song.getLikeCount()-1);
+        }
+        else{
             listSong.add(song);
+            song.setLikeCount(song.getLikeCount()+1);
+        }
 
+        songService.updateSong(song);
         playlist.setSongPlaylist(listSong);
         playlistService.update(playlist);
         return "redirect:/";

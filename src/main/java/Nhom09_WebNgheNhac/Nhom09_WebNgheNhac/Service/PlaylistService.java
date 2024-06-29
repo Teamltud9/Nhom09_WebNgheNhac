@@ -123,6 +123,9 @@ public class PlaylistService {
 
         if (playlist.getSongPlaylist().remove(song)) {
             playlist.setQuantity(playlist.getQuantity() - 1);
+
+            song.setLikeCount(song.getLikeCount()-1);
+            songRepository.save(song);
             playlistRepository.save(playlist);
         } else {
             throw new IllegalStateException("Song is not in the playlist");

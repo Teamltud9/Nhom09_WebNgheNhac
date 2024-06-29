@@ -41,7 +41,7 @@
         <tr th:each="song : ${songs}">
             <td>
                 <img th:src="@{${song.image}}"
-                     alt="${song.songName}" width="50" height="50">
+                     th:alt="${song.songName}" width="50" height="50">
             </td>
             <td >
                 <a th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
