@@ -9,8 +9,8 @@
 </head>
 <body>
 <section layout:fragment="content" class="container mt-5">
-    <h1 class="mb-4">Form Report</h1>
-    <form th:action="@{/report/add/{songId}/{userId}(songId=${report.song.songId}, userId=${report.createByUser})}"
+    <h1 class="mb-4 text-center">Form Report</h1>
+    <form class="border border-2 p-5 rounded-3" th:action="@{/report/add/{songId}/{userId}(songId=${report.song.songId}, userId=${report.createByUser})}"
           th:object="${report}" method="post">
         <div class="mb-3" hidden>
             <label for="createByUser" class="form-label">Content:</label>
@@ -23,20 +23,22 @@
             <input type="text" id="song.songId" th:field="*{song.songId}" class="form-control"/>
         </div>
         <div class="mb-3">
-            <label for="creationDate" class="form-label">Create On: </label>
+            <label for="creationDate" class="form-label fw-medium fs-5">Create On: </label>
             <input type="text" id="creationDate" class="form-control" th:field="*{creationDate}"
-                   th:value="${creationDate}" required>
+                   th:value="${creationDate}" required readonly>
             <input type="hidden" th:field="*{creationDate}" th:value="${#temporals.format(report.creationDate, 'dd/MM/yyyy HH:mm')}" />
         </div>
 
         <div class="mb-3">
-            <label for="content" class="form-label">Content: </label>
+            <label for="content" class="form-label fw-medium fs-5">Content: </label>
             <input type="text" id="content" class="form-control" th:field="*{content}" required>
             <div class="text-danger" th:if="${#fields.hasErrors('content')}"
                  th:errors="*{content}"></div>
         </div>
+        <div class="flex justify-content-end py-4 align-items-center mb-3">
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+            <button style="float: right;" type="submit" class="btn btn-primary p-3 fw-medium text-uppercase">Submit</button>
+        </div>
     </form>
 </section>
 <script
