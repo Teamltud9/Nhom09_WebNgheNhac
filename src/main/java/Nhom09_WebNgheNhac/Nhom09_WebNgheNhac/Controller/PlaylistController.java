@@ -2,6 +2,7 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PlaylistService;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/playlist")
@@ -133,6 +135,31 @@ public class PlaylistController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/playlist";
+    }
+
+    @GetMapping("/detail/{playlistId}")
+    public String getPlaylistDetails(@PathVariable("playlistId") int playlistId, Model model, Authentication authentication) {
+        Optional<Playlist> playlistOptional = playlistService.getPlaylistById(playlistId);
+
+        if (playlistOptional.isPresent()) {
+            Playlist playlist = playlistOptional.get();
+
+            // Kiểm tra quyền truy cập
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
+            if (!playlist.getUser().getUserId().equals(currentUser.getUserId())) {
+                throw new AccessDeniedException("You don't have permission to view this playlist");
+            }
+
+            Set<Song> songs = playlist.getSongPlaylist();
+
+            model.addAttribute("playlist", playlist);
+            model.addAttribute("songs", songs);
+
+            return "playlist/detail-playlist";
+        } else {
+            throw new IllegalArgumentException("Invalid playlist Id:" + playlistId);
+        }
     }
 }
 

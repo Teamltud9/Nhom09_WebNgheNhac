@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${playlist.playlistName}">Playlist Detail</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <h1 style="text-align:center" th:text="${playlist.playlistName}">Playlist Name</h1>
+    <p>Total songs: <span th:text="${playlist.quantity}"></span></p>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Category</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="song : ${songs}">
+            <td>
+                <img th:src="@{${song.image}}"
+                     th:alt="${song.songName}" width="50" height="50">
+            </td>
+            <td>
+                <a th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
+            </td>
+            <td th:text="${song.time}"></td>
+            <td th:text="${song.category.categoryName}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

@@ -1,7 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
-import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Premium;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.PlaylistRepository;
@@ -9,7 +8,6 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.SongRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -96,5 +95,4 @@ public class PlaylistService {
             playlistRepository.save(playlist);
         }
     }
-
 }
