@@ -32,6 +32,7 @@
         <tr>
             <th class="text-center">IMAGE</th>
             <th class="text-center">NAME</th>
+            <th class="text-center">STATE</th>
             <th class="text-center" sec:authorize="hasAuthority('ADMIN')">ACTION</th>
         </tr>
         </thead>
@@ -48,11 +49,17 @@
                     <p class="text-body-tertiary fs-5 fw-medium text-uppercase" th:text="${category.categoryName}"></p>
                 </a>
                 </td>
-
+            <td>
+                <input type="checkbox" th:checked="${category.isDelete}" disabled="disabled">
+            </td>
             <td sec:authorize="hasAuthority('ADMIN')" class="text-center align-middle ActionTH">
-                    <a th:href="@{/category/edit/{id}(id=${category.categoryId})}" class="btn  p-2 text-decoration-none px-4 fs-6 text-light btnEdit" style="float: left;">EDIT</a>
-                    <a th:href="@{/category/delete/{id}(id=${category.categoryId})}"
-                   class="btn btn-danger btn-sm p-2 px-3 fs-6" onclick="return confirm('Are you sure?')" style="float: right;">DELETE</a>
+                <a th:href="@{/category/edit/{id}(id=${category.categoryId})}" class="btn  p-2 text-decoration-none px-4 fs-6 text-light btnEdit" style="float: left;">EDIT</a>
+<!--                    <a th:href="@{/category/delete/{id}(id=${category.categoryId})}"
+                   class="btn btn-danger btn-sm p-2 px-3 fs-6" onclick="return confirm('Are you sure?')" style="float: right;">DELETE</a>-->
+                <a th:if="${!category.isDelete}" style="float: right;" th:href="@{/category/delete/{id}(id=${category.categoryId})}"
+                   class="btn btn-danger btn-sm p-2 px-3 fs-6" >DELETED</a>
+                <a th:if="${category.isDelete}" style="float: right;" th:href="@{/category/delete/{id}(id=${category.categoryId})}"
+                   class="btn btn-warning btn-sm p-2 px-3 fs-6" >SHOW</a>
             </td>
         </tr>
         </tbody>

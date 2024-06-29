@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
@@ -80,6 +81,13 @@ public class PlaylistService {
         ex_playlist.setPlaylistName(playlist.getPlaylistName());
         ex_playlist.setImage(playlist.getImage());
         playlistRepository.save(ex_playlist);
+    }
+
+    public void deletedById(int id) {
+        Playlist playlist = playlistRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Playlist does not exist."));
+        playlist.setDelete(!playlist.isDelete());
+        playlistRepository.save(playlist);
     }
 
     public void addSongToPlaylist(int playlistId, int songId, User user) throws Exception {

@@ -115,8 +115,7 @@ public class PlaylistController {
         if (!playlist.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new AccessDeniedException("You don't have permission to delete this playlist");
         }
-        playlist.setDelete(true);
-        playlistService.updatePlaylist(playlist);
+        playlistService.deletedById(playlistId);
         return "redirect:/playlist";
     }
 

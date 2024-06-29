@@ -21,7 +21,7 @@
             <th>Name</th>
             <th>Price</th>
             <th>Duration</th>
-            <th>State</th>
+            <th sec:authorize="hasAuthority('ADMIN')">State</th>
             <th sec:authorize="hasAuthority('ADMIN')">Action</th>
         </tr>
         </thead>
@@ -30,7 +30,7 @@
             <td th:text="${premium.premiumName}"></td>
             <td th:text="${premium.price}"></td>
             <td th:text="${premium.duration}"></td>
-            <td>
+            <td sec:authorize="hasAuthority('ADMIN')">
                 <input type="checkbox" th:checked="${premium.isDeleted}" disabled>
             </td>
             <td sec:authorize="hasAuthority('ADMIN')">

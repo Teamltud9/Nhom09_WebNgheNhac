@@ -2,10 +2,14 @@ package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.CategoryService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +30,16 @@ public class CategoryController {
 
 
     @GetMapping("")
-    public String listCategory(Model model) {
-        model.addAttribute("categories", categoryService.getAlCatologies());
+    public String listCategory(Model model)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        if(userLogin.getRoles().stream().anyMatch(role -> role.getRoleId().equals(Role.ADMIN.value))){
+            model.addAttribute("categories", categoryService.getAlCatologies());
+        }
+        else{
+            model.addAttribute("categories", categoryService.getAlCatologies().stream().filter(p -> !p.isDelete()).toList());
+        }
         return "/category/list-category";
     }
 

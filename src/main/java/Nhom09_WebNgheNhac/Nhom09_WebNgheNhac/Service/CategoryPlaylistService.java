@@ -29,11 +29,4 @@ public class CategoryPlaylistService {
         ex_categoryPlaylist.setCategoryPlaylistName(categoryPlaylist.getCategoryPlaylistName());
         categoryPlaylistRepository.save(ex_categoryPlaylist);
     }
-    public void deleteCategoryPlaylistById(int id)
-    {
-        var categoryPlaylist = categoryPlaylistRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Category playlist does not exist."));
-        categoryPlaylist.setDelete(true);
-        categoryPlaylistRepository.save(categoryPlaylist);
-    }
 }
