@@ -47,16 +47,13 @@ public class SongController {
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             User user = (User) authentication.getPrincipal();
+                Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
 
-            Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
-
-             songIds = playlist.getSongPlaylist()
-                    .stream()
-                    .map(Song::getSongId)
-                    .toList();
+                songIds = playlist.getSongPlaylist()
+                        .stream()
+                        .map(Song::getSongId)
+                        .toList();
         }
-
-
         model.addAttribute("songIds", songIds);
         return "/song/list-song";
     }
