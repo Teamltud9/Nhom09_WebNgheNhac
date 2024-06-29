@@ -1,0 +1,32 @@
+
+.pagination{
+    display: inline-block;
+}
+.footer {
+     position: fixed;
+     bottom: 0;
+     width: 100%;
+}
+
+.suggestion {
+    padding: 10px;
+    cursor: pointer;
+}
+.suggestion:hover{
+     background-color: #6c757d;
+}
+.dropdown-content {
+    margin-top: 36px;
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
