@@ -45,8 +45,11 @@
             /* gap: 5px; */
            
         }
-        .card img{
+        .card .img{
             border-radius: 15px;
+            width: 400px;
+            height: 400px;
+            object-fit: contain;
         }
         .card label{
             margin-bottom: 10px;
@@ -75,13 +78,13 @@
         <img th:src="@{${song.image}}" class="back" alt="">
         <div class="card" >
             <div class="net">
-                <a>Quay về</a>
+                <a href="javascript:history.back()"><img width="30" height="30" src="https://img.icons8.com/ios-filled/50/back.png" alt="back"/></a>
                 <h2 th:text="@{${song.songName}}"></h2>
                 <a>Tym</a>
             </div>
             <!-- <label th:text="${song.create_by_user.userName}"></label> -->
             <label th:text="${song.category.categoryName}"></label>
-            <img th:src="@{${song.image}}" >
+            <img class="img" th:src="@{${song.image}}" >
             <div th:if="${check}">
                 <audio controls class="custom-audio">
                     <source th:src="@{${song.filePath}}" type="audio/mpeg">
