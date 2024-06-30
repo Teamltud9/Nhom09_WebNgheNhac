@@ -45,8 +45,17 @@ public class SongController {
 
 
     @GetMapping
-    public String listSong(Model model) {
-        model.addAttribute("songs", songService.getAllSong().stream().filter(s -> !s.isDelete()).toList());
+    public String listSong(Model model , String sapxep) {
+        if(sapxep!=null){
+            if(sapxep.equals("tangdan")){
+                model.addAttribute("songs", songService.getAllSong().stream().filter(s -> !s.isDelete()).sorted(Comparator.comparing(Song::getLikeCount)).toList());
+            }
+            else
+                model.addAttribute("songs", songService.getAllSong().stream().filter(s -> !s.isDelete()).sorted(Comparator.comparing(Song::getLikeCount).reversed()).toList());
+        }
+        else
+            model.addAttribute("songs", songService.getAllSong().stream().filter(s -> !s.isDelete()).toList());
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
@@ -196,8 +205,16 @@ public class SongController {
 
 
     @GetMapping("/search")
-    public String Search(@NonNull Model model, String query) {
-        model.addAttribute("songs", songService.searchSong(query));
+    public String Search(@NonNull Model model, String query , String sapxep) {
+        if(sapxep!=null){
+            if(sapxep.equals("tangdan")){
+                model.addAttribute("songs", songService.searchSong(query).stream().sorted(Comparator.comparing(Song::getLikeCount)));
+            }
+            else
+                model.addAttribute("songs", songService.searchSong(query).stream().sorted(Comparator.comparing(Song::getLikeCount).reversed()));
+        }
+        else
+            model.addAttribute("songs", songService.searchSong(query));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){

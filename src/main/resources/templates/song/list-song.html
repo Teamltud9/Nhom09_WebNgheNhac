@@ -24,7 +24,33 @@
    <!-- <div sec:authorize="hasAuthority('SINGER')">
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Song</a>
-    </div>-->
+
+
+       </div>-->
+    <div>
+        <div th:if="${query != null}" style="display:flex">
+            <form th:action="@{/search}" method="get">
+                <input type="hidden" th:value="${query}" name="query">
+                <input type="hidden" th:value="tangdan" name="sapxep">
+                <button type="submit">Tăng dần</button>
+            </form>
+            <form th:action="@{/search}" method="get">
+                <input type="hidden" th:value="${query}" name="query">
+                <input type="hidden" th:value="giamdan" name="sapxep">
+                <button type="submit">Giảm dần</button>
+            </form>
+        </div>
+        <div th:if="${query == null}" style="display:flex">
+            <form th:action="@{/}" method="get">
+                <input type="hidden" th:value="tangdan" name="sapxep">
+                <button type="submit">Tăng dần</button>
+            </form>
+            <form th:action="@{/}" method="get">
+                <input type="hidden" th:value="giamdan" name="sapxep">
+                <button type="submit">Giảm dần</button>
+            </form>
+        </div>
+    </div>
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
