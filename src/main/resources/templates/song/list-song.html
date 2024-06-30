@@ -62,7 +62,7 @@ btn-success btn-sm">Edit</a>
                 <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
 btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>-->
-            <td>
+            <td th:if="${isLoggedIn} and ${not #lists.isEmpty(playlists)}">
                 <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
                     <input type="hidden" name="songId" th:value="${song.songId}" />
                     <select name="playlistId" class="form-select form-select-sm mb-2" required>

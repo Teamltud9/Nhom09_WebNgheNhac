@@ -42,10 +42,8 @@
 
             <td th:text="${song.category.categoryName}"></td>
             <td th:if="${#authentication.principal.userId} == ${song.createByUser}">
-                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
-btn-success btn-sm">Edit</a>
-                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
-btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn btn-success btn-sm">Edit</a>
+                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
 
         </tr>
