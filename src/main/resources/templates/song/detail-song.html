@@ -3,16 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .custom-audio {
+            width: 600px;
+            margin: 20px auto;
+            display: block;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-audio::-webkit-media-controls-panel {
+            background-color: #ffffff;
+            border-radius: 10px;
+        }
+
+        .custom-audio::-webkit-media-controls-play-button,
+        .custom-audio::-webkit-media-controls-volume-slider {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .card{
+            display: flex;
+            flex-direction: column;
+            padding: 10px 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            align-items: center;
+            margin:30px auto;
+            background-color: #f4f4f4;
+            z-index: 99;
+            position: relative;
+            /* gap: 5px; */
+           
+        }
+        .card img{
+            border-radius: 15px;
+        }
+        .card label{
+            margin-bottom: 10px;
+        }
+        .back{
+            width: 98%;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0.3;
+            height: 90%;
+            z-index: 1;
+        }
+        .net{
+            align-items: none;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .net a{
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<div th:if="${check}">
+    <!-- <div class="cha" th:style="'background-image: url(' + @{${song.image}} + ');'"> -->
+        <img th:src="@{${song.image}}" class="back" alt="">
+        <div class="card" >
+            <div class="net">
+                <a>Quay về</a>
+                <h2 th:text="@{${song.songName}}"></h2>
+                <a>Tym</a>
+            </div>
+            <!-- <label th:text="${song.create_by_user.userName}"></label> -->
+            <label th:text="${song.category.categoryName}"></label>
+            <img th:src="@{${song.image}}" >
+            <div th:if="${check}">
+                <audio controls class="custom-audio">
+                    <source th:src="@{${song.filePath}}" type="audio/mpeg">
+                </audio>
+            </div>
+            <div th:if="${!check}">
+                <p>Bạn không có quyền premium</p>
+            </div>
+        </div>
+    <!-- </div> -->
+   
+       
 
-    <audio controls>
-        <source th:src="@{${song.filePath}}" type="audio/mpeg">
-    </audio>
-</div>
-<div th:if="${!check}">
-    <p>Bạn không có quyền premium</p>
-</div>
 </body>
 </html>
