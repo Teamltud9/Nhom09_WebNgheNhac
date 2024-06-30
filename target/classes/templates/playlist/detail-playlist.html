@@ -17,7 +17,7 @@
 <body>
 <section layout:fragment="content">
     <h1 style="text-align:center" th:text="${playlist.playlistName}">Playlist Name</h1>
-    <p>Total songs:
+    <p th:if="${playlist.categoryPlaylist.categoryPlaylistId!=1}">Total songs:
         <span th:text="${playlist.quantity}"></span>
     </p>
     <table class="table table-bordered table-hover">
@@ -34,7 +34,7 @@
             <td class="ImageTH text-center align-middle" >
                 <img class="object-fit-cover" th:src="@{${song.image}}"
                      alt="${song.songName}" width="60" height="60">
-            </td>>
+            </td>
             <td>
                 <a class="d-block fs-5 text-decoration-none fw-medium text-body-tertiary" th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
                 <span class="d-block" th:text="${song.time}"></span>

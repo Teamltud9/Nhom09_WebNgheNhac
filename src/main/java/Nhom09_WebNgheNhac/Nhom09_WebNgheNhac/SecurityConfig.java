@@ -39,11 +39,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/music/**","/images/**","/wwwroot/**", "/", "/oauth/**", "/user/register"
                                 , "/error","/user/login" ,"/category","/category/detail/*","/song/detail/**"
-                                ,"/search","/SearchSuggestions")
+                                ,"/search","/SearchSuggestions","/playlist/album")
                         .permitAll()
-                        .requestMatchers("/invoice/","/premium/","/song/like/**")
+                        .requestMatchers("/invoice/","/premium/","/song/like/**","/playlist/likeplaylist")
                         .hasAnyAuthority("USER","SINGER","ADMIN")
-                        .requestMatchers("/invoice/add","/playlist/add","/playlist/edit/**","/playlist/delete/**","/report/add/")
+                        .requestMatchers("/invoice/add","/playlist/add","/playlist/edit/**","/playlist/delete/**"
+                                ,"/report/add/")
                         .hasAnyAuthority("USER","SINGER")
                         .requestMatchers("/song/edit/**", "/song/add", "/song/delete/**")
                         .hasAuthority("SINGER")

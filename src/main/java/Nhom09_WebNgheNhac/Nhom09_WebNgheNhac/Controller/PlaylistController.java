@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/playlist")
@@ -47,7 +48,7 @@ public class PlaylistController {
             User user = userService.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             List<Playlist> userPlaylists = playlistService.getPlaylistsByUser(user);
-            model.addAttribute("playlists", userPlaylists);
+            model.addAttribute("playlists", userPlaylists.stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==2));
             return "playlist/list-playlist";
         }
         return "redirect:/login";
@@ -89,6 +90,8 @@ public class PlaylistController {
         }
         playlistService.add(playlist);
 
+        if(userLogin.getRoles().stream().anyMatch(p -> p.getRoleId().equals(Role.SINGER.value)))
+            return "redirect:/playlist/album";
         return "redirect:/playlist";
     }
 
@@ -171,7 +174,7 @@ public class PlaylistController {
                     throw new AccessDeniedException("You don't have permission to view this playlist");
                 }
             }
-            Set<Song> songs = playlist.getSongPlaylist();
+            Set<Song> songs = playlist.getSongPlaylist().stream().filter(p->!p.isDelete()).collect(Collectors.toSet());
             model.addAttribute("playlist", playlist);
             model.addAttribute("songs", songs);
             return "playlist/detail-playlist";
@@ -195,6 +198,16 @@ public class PlaylistController {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/playlist/detail/" + playlistId;
+    }
+
+    @GetMapping("/likeplaylist")
+    public String playlistLike(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+
+        Playlist playlist = playlistService.likePlaylist(userLogin.getUserId(),1);
+
+        return "redirect:/playlist/detail/"+playlist.getPlaylistId();
     }
 }
 
