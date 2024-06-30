@@ -22,7 +22,7 @@
             <th>Price</th>
             <th>Duration</th>
             <th sec:authorize="hasAuthority('ADMIN')">Action</th>
-            <th sec:authorize="hasAuthority('USER')">Purchase</th>
+            <th sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')">Purchase</th>
         </tr>
         </thead>
         <tbody>
@@ -36,7 +36,7 @@
                    class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
 
             </td>
-            <td sec:authorize="hasAuthority('USER')">
+            <td sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')">
                 <a th:href="@{/invoice/add/{premiumId}/{userId}(premiumId=${premium.premiumId}, userId=${#authentication.principal.userId})}"
                    class="btn btn-success btn-sm">Purchase</a></td>
         </tr>

@@ -128,8 +128,6 @@ public class SongController {
                     .map(Song::getSongId)
                     .toList();
 
-            List<Playlist> playlists = playlistService.getPlaylistsByUser(user);
-            model.addAttribute("playlists", playlists);
             if(!user.getUserId().equals(song.getCreateByUser()) && !user.getRoles().stream()
                     .anyMatch(p -> p.getRoleId().equals(Role.ADMIN.value)) ){
                 if(song.isPremium()){
@@ -168,18 +166,20 @@ public class SongController {
         if (!song.getCreateByUser().equals(userLogin.getUserId())) {
             return "redirect:/error";
         }
-        model.addAttribute("categories", categoryService.getAlCatologies());
+        model.addAttribute("categories", categoryService.getAlCatologies()
+                .stream().filter(c -> !c.isDelete()).toList());
         model.addAttribute("song", song);
         return "/song/update-song";
     }
 
     @PostMapping("/song/edit/{songId}")
     public String updateProduct(@PathVariable("songId") int songId, @Valid Song song, BindingResult result,
-            MultipartFile imageFile, MultipartFile fileMp3)
+            MultipartFile imageFile, MultipartFile fileMp3, Model model)
             throws IOException, InvalidDataException, UnsupportedTagException {
         if (result.hasErrors()) {
-            song.setSongId(Math.toIntExact(songId));
-            return "/products/update-product";
+            model.addAttribute("categories", categoryService.getAlCatologies()
+                    .stream().filter(c -> !c.isDelete()).toList());
+            return "/song/update-song";
         }
 
         Optional<Song> song1 = songService.getSongId(songId);

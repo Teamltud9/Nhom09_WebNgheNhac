@@ -35,8 +35,8 @@
                 <td>
                     <div class="d-flex justify-content-around align-items-center">
                         <a th:href="@{/playlist/detail/{id}(id=${album.playlistId})}" class="p-2 fw-medium btn btn-info btn-sm">View</a>
-                        <a  th:if="${#authentication.principal.userId==album.user.userId}" th:href="@{/playlist/edit/{id}(id=${album.playlistId})}" class="p-2 fw-medium btn btn-warning btn-sm">Edit</a>
-                        <a  th:if="${#authentication.principal.userId==album.user.userId}" th:href="@{/playlist/delete/{id}(id=${album.playlistId})}" class="p-2 fw-medium btn btn-danger btn-sm"
+                        <a  sec:authorize="isAuthenticated()"  th:if="${#authentication.principal.userId==album.user.userId}" th:href="@{/playlist/edit/{id}(id=${album.playlistId})}" class="p-2 fw-medium btn btn-warning btn-sm">Edit</a>
+                        <a  sec:authorize="isAuthenticated()" th:if="${#authentication.principal.userId==album.user.userId}" th:href="@{/playlist/delete/{id}(id=${album.playlistId})}" class="p-2 fw-medium btn btn-danger btn-sm"
                            onclick="return confirm('Are you sure?')">Delete</a>
                     </div>
                 </td>
