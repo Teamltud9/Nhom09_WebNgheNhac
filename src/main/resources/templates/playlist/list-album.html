@@ -11,9 +11,9 @@
 <body>
 <div class="container mt-5">
     <section layout:fragment="content">
-        <h1 style="text-align:center">Albums</h1>
+        <h1 style="text-align:center">My Albums</h1>
         <div sec:authorize="hasAuthority('SINGER')">
-            <a th:if="${#authentication.principal.userId==user}" th:href="@{/playlist/add}" class="btn btn-primary mb-3">Add New Playlist</a>
+            <a th:if="${#authentication.principal.userId==user}" th:href="@{/playlist/add}" class="btn btn-primary mb-3">Add New Albums</a>
         </div>
         <table class="table table-bordered table-hover">
             <thead class="table-dark">
