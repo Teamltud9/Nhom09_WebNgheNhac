@@ -10,23 +10,26 @@
 
     <style>
         .heart-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #ff0000;
-    font-size: 24px;
-}
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ff0000;
+            font-size: 24px;
+        }
+        .ImageTH{
+            width: 80px;
+            height: 80px;
+        }
+
     </style>
 </head>
 <body>
 <section layout:fragment="content">
-    <h1 style="text-align:center">Songs List</h1>
+    <h1 style="text-align:center;margin-bottom: 15px;">Songs List</h1>
    <!-- <div sec:authorize="hasAuthority('SINGER')">
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Song</a>
-
-
-       </div>-->
+    </div>-->
     <div>
         <div th:if="${query != null}" style="display:flex">
             <form th:action="@{/search}" method="get">
@@ -52,59 +55,68 @@
         </div>
     </div>
     <table class="table table-bordered table-hover">
-        <thead class="table-dark">
+        <thead class="table-dark" >
         <tr>
             <th>Image</th>
             <th>Name</th>
-            <th>Time</th>
             <th>Category</th>
             <th sec:authorize="isAuthenticated()">Like</th>
-            <th sec:authorize="isAuthenticated()">Playlist</th>
+            <th th:if="${isLoggedIn} and ${not #lists.isEmpty(playlists)}">Playlist</th>
 <!--            <th sec:authorize="hasAuthority('SINGER')" >Actions</th>-->
         </tr>
         </thead>
         <tbody>
-        <tr th:each="song : ${songs}">
-            <td>
-                <img th:src="@{${song.image}}"
-                     th:alt="${song.songName}" width="50" height="50">
-            </td>
-            <td >
-                <a th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
-            </td>
-            <td th:text="${song.time}"></td>
-            <td th:text="${song.category.categoryName}"></td>
-            <td sec:authorize="isAuthenticated()">
-                <a th:href="@{/song/like/{id}(id=${song.songId})}">
-                    <button id="heartButton" class="heart-button" >
-                        <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
-                        <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
-                    </button></a>
-                <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
-                   class="btn btn-success btn-sm">Report</a>
-            </td>
-            <!--<td sec:authorize="hasAuthority('SINGER')"  th:if="${#authentication.principal.userId} == ${song.createByUser}">
-                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
-btn-success btn-sm">Edit</a>
-                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
-btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>-->
-            <td sec:authorize="isAuthenticated()">
-                <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
-                    <input type="hidden" name="songId" th:value="${song.songId}" />
-                    <select name="playlistId" class="form-select form-select-sm mb-2" required>
-                        <option value="">Select Playlist</option>
-                        <option th:each="playlist : ${playlists}"
-                                th:value="${playlist.playlistId}"
-                                th:text="${playlist.playlistName}"></option>
-                    </select>
-                    <button type="submit" class="btn btn-primary btn-sm">Add to Playlist</button>
-                </form>
-                <p th:if="${#lists.isEmpty(playlists)}">No playlists available</p>
-            </td>
-        </tr>
+            <tr th:each="song : ${songs}">
+                <td class="ImageTH text-center align-middle" >
+                    <a th:href="@{/song/detail/{id}(id=${song.songId})}">
+                        <img th:src="@{${song.image}}"
+                    alt="${song.songName}" width="50" height="50">
+                    </a>
+                    
+                </td>
+                <td>
+                    <a class="d-block fs-5 text-decoration-none fw-medium text-body-tertiary" th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
+                    <span class="d-block" th:text="${song.time}"></span>
+                </td>
+                <td>
+                    <p class="fs-4 fw-medium text-center align-middle text-uppercase text-body-tertiary" th:text="${song.category.categoryName}"></p>
+                </td>
+
+                <td sec:authorize="isAuthenticated()">
+                    <a th:href="@{/song/like/{id}(id=${song.songId})}">
+                        <button id="heartButton" class="heart-button" >
+                            <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
+                            <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
+                        </button></a>
+                    <!-- <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+                       class="btn btn-success btn-sm">Report</a> -->
+                </td>
+                <td th:if="${isLoggedIn} and ${not #lists.isEmpty(playlists)}">
+                    <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
+                        <input type="hidden" name="songId" th:value="${song.songId}" />
+                        <select name="playlistId" class="form-select form-select-sm mb-2" required>
+                            <option value="">Select Playlist</option>
+                            <option th:each="playlist : ${playlists}"
+                                    th:value="${playlist.playlistId}"
+                                    th:text="${playlist.playlistName}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Add to Playlist</button>
+                    </form>
+                    <p th:if="${#lists.isEmpty(playlists)}">No playlists available</p>
+                </td>
+
+                
+    
+            </tr>
+       
         </tbody>
     </table>
+
+
+
+
+
+
 </section>
 </body>
 </html>

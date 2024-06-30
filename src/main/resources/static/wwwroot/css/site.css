@@ -77,3 +77,7 @@
     text-decoration: none;
     color: #fff;
 }
+
+.form-control{
+    padding: 8px !important;
+}

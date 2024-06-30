@@ -55,16 +55,16 @@ public class SongController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Integer> songIds = new ArrayList<>();
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
             User user = (User) authentication.getPrincipal();
             Optional<User> user1 = userService.getUserId(user.getUserId());
             UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user1.get(), authentication.getCredentials(), user1.get().getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
 
-            Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
+            Playlist playlist = playlistService.likePlaylist(user.getUserId(), 1);
 
-             songIds = playlist.getSongPlaylist()
+            songIds = playlist.getSongPlaylist()
                     .stream()
                     .map(Song::getSongId)
                     .toList();
@@ -95,7 +95,8 @@ public class SongController {
     }
 
     @PostMapping("/song/add")
-    public String addProduct(@Valid Song song, BindingResult result,MultipartFile imageFile,MultipartFile fileMp3, String selectedNgheSiList,Model model) throws InvalidDataException, UnsupportedTagException, IOException {
+    public String addProduct(@Valid Song song, BindingResult result, MultipartFile imageFile, MultipartFile fileMp3,
+            String selectedNgheSiList, Model model) throws InvalidDataException, UnsupportedTagException, IOException {
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.getAlCatologies()
                                                 .stream().filter(c -> !c.isDelete()).toList());
@@ -104,20 +105,31 @@ public class SongController {
         song.setTime(songService.timeMusic(fileMp3));
         song.setImage(songService.saveImage(imageFile));
         song.setFilePath(songService.saveMusic(fileMp3));
-        songService.addSong(song,selectedNgheSiList);
+        songService.addSong(song, selectedNgheSiList);
         return "redirect:/";
     }
 
     @GetMapping("/song/detail/{songId}")
     public String detailSong(@PathVariable("songId") int songId, Model model) {
+
         Song song = songService.getSongId(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<Integer> songIds = new ArrayList<>();
         boolean check;
 
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             User user = (User) authentication.getPrincipal();
+            Playlist playlist = playlistService.likePlaylist(user.getUserId(), 1);
+
+            songIds = playlist.getSongPlaylist()
+                    .stream()
+                    .map(Song::getSongId)
+                    .toList();
+
+            List<Playlist> playlists = playlistService.getPlaylistsByUser(user);
+            model.addAttribute("playlists", playlists);
             if(!user.getUserId().equals(song.getCreateByUser()) && !user.getRoles().stream()
                     .anyMatch(p -> p.getRoleId().equals(Role.ADMIN.value)) ){
                 if(song.isPremium()){
@@ -140,6 +152,8 @@ public class SongController {
                 check = true;
         }
 
+
+        model.addAttribute("songIds", songIds);
         model.addAttribute("check", check);
         model.addAttribute("song", song);
         return "/song/detail-song";
@@ -160,24 +174,25 @@ public class SongController {
     }
 
     @PostMapping("/song/edit/{songId}")
-    public String updateProduct(@PathVariable("songId") int songId, @Valid Song song, BindingResult result,MultipartFile imageFile,MultipartFile fileMp3) throws IOException, InvalidDataException, UnsupportedTagException {
+    public String updateProduct(@PathVariable("songId") int songId, @Valid Song song, BindingResult result,
+            MultipartFile imageFile, MultipartFile fileMp3)
+            throws IOException, InvalidDataException, UnsupportedTagException {
         if (result.hasErrors()) {
             song.setSongId(Math.toIntExact(songId));
             return "/products/update-product";
         }
 
         Optional<Song> song1 = songService.getSongId(songId);
-        if(!imageFile.isEmpty())
+        if (!imageFile.isEmpty())
             song.setImage(songService.saveImage(imageFile));
-        else{
+        else {
             song.setImage(song1.get().getImage());
         }
 
-        if(!fileMp3.isEmpty()){
+        if (!fileMp3.isEmpty()) {
             song.setTime(songService.timeMusic(fileMp3));
             song.setFilePath(songService.saveMusic(fileMp3));
-        }
-        else{
+        } else {
             song.setTime(song1.get().getTime());
             song.setFilePath(song1.get().getFilePath());
         }
@@ -212,6 +227,8 @@ public class SongController {
         }
         else
             model.addAttribute("songs", songService.searchSong(query));
+
+        model.addAttribute("query", query);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Integer> songIds = new ArrayList<>();
         if(!(authentication instanceof AnonymousAuthenticationToken)){
@@ -240,7 +257,8 @@ public class SongController {
     public String listQuanLi(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        model.addAttribute("songs", songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId())));
+        model.addAttribute("songs",
+                songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId())));
         return "/song/manage-song";
     }
 
@@ -252,7 +270,7 @@ public class SongController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        Playlist playlist = playlistService.likePlaylist(user.getUserId(),1);
+        Playlist playlist = playlistService.likePlaylist(user.getUserId(), 1);
         Set<Song> listSong = playlist.getSongPlaylist();
         if(listSong.stream().anyMatch(p->p.getSongId() == song.getSongId())){
             listSong.removeIf(p ->p.getSongId() == song.getSongId());
@@ -266,7 +284,7 @@ public class SongController {
         songService.updateSong(song);
         playlist.setSongPlaylist(listSong);
         playlistService.update(playlist);
-        return "redirect:/";
+        return "redirect:/song/detail/" + songId;
     }
 
     @GetMapping("/error")

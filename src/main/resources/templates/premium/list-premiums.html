@@ -21,9 +21,8 @@
             <th>Name</th>
             <th>Price</th>
             <th>Duration</th>
-            <th sec:authorize="hasAuthority('ADMIN')">State</th>
             <th sec:authorize="hasAuthority('ADMIN')">Action</th>
-            <th sec:authorize="isAuthenticated()&&!hasAuthority('ADMIN')">Purchase</th>
+            <th sec:authorize="hasAuthority('USER')">Purchase</th>
         </tr>
         </thead>
         <tbody>
@@ -32,17 +31,12 @@
             <td th:text="${premium.price}"></td>
             <td th:text="${premium.duration}"></td>
             <td sec:authorize="hasAuthority('ADMIN')">
-                <input type="checkbox" th:checked="${premium.isDeleted}" disabled>
-            </td>
-            <td sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/premium/edit/{id}(id=${premium.premiumId})}" class="btn btn-success btn-sm">Edit</a>
-                <a th:if="${!premium.isDeleted}" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
-                   class="btn btn-danger btn-sm" >Ẩn</a>
-                <a th:if="${premium.isDeleted}" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
-                   class="btn btn-warning btn-sm" >Hiện</a>
+                <a th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
+                   class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
 
             </td>
-            <td sec:authorize="isAuthenticated()&&!hasAuthority('ADMIN')">
+            <td sec:authorize="hasAuthority('USER')">
                 <a th:href="@{/invoice/add/{premiumId}/{userId}(premiumId=${premium.premiumId}, userId=${#authentication.principal.userId})}"
                    class="btn btn-success btn-sm">Purchase</a></td>
         </tr>
