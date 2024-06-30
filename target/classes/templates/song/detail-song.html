@@ -83,6 +83,23 @@
     </style>
 </head>
 <body>
+<td sec:authorize="isAuthenticated()">
+    <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
+        <input type="hidden" name="songId" th:value="${song.songId}" />
+        <select name="playlistId" class="form-select form-select-sm mb-2" required>
+            <option value="">Select Playlist</option>
+            <option th:each="playlist : ${playlists}"
+                    th:value="${playlist.playlistId}"
+                    th:text="${playlist.playlistName}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Add to Playlist</button>
+    </form>
+    <p th:if="${#lists.isEmpty(playlists)}">No playlists available</p>
+</td>
+<td sec:authorize="isAuthenticated()">
+<a  th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+   class="btn btn-success btn-sm">Report</a>
+</td>
     <!-- <div class="cha" th:style="'background-image: url(' + @{${song.image}} + ');'"> -->
         <img th:src="@{${song.image}}" class="back" alt="">
         <div class="card" >

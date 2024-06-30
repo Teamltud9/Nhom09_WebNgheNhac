@@ -11,6 +11,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,13 +55,13 @@ public class PlaylistController {
         return "redirect:/login";
     }
 
-    @GetMapping("/album")
-    public String showAlbums(Model model)
-    {
-        model.addAttribute("albums", playlistService.getAlbum()
-                                .stream().filter(p -> !p.isDelete()).toList());
-        return "playlist/list-album";
-    }
+/*
+*
+*
+*
+* */
+
+
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
@@ -159,21 +160,34 @@ public class PlaylistController {
     }
 
     @GetMapping("/detail/{playlistId}")
-    public String getPlaylistDetails(@PathVariable("playlistId") int playlistId, Model model, Authentication authentication) {
+    public String getPlaylistDetails(@PathVariable("playlistId") int playlistId, Model model) {
         Optional<Playlist> playlistOptional = playlistService.getPlaylistById(playlistId);
         if (playlistOptional.isPresent()) {
             Playlist playlist = playlistOptional.get();
 
+            
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             // Kiểm tra quyền truy cập
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
-            if (playlistOptional.get().getCategoryPlaylist().getCategoryPlaylistId() != 3)
-            {
-                if (!playlist.getUser().getUserId().equals(currentUser.getUserId()))
+            if(!(authentication instanceof AnonymousAuthenticationToken)){
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
+                if (playlistOptional.get().getCategoryPlaylist().getCategoryPlaylistId() != 3)
                 {
-                    throw new AccessDeniedException("You don't have permission to view this playlist");
+                    if (!playlist.getUser().getUserId().equals(currentUser.getUserId()))
+                    {
+                        throw new AccessDeniedException("You don't have permission to view this playlist");
+                    }
                 }
             }
+            else{
+                if (playlistOptional.get().getCategoryPlaylist().getCategoryPlaylistId() != 3)
+                {
+
+                       return "/error";
+
+                }
+            }
+
             Set<Song> songs = playlist.getSongPlaylist().stream().filter(p->!p.isDelete()).collect(Collectors.toSet());
             model.addAttribute("playlist", playlist);
             model.addAttribute("songs", songs);

@@ -37,9 +37,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/music/**","/images/**","/wwwroot/**", "/", "/oauth/**", "/user/register"
+                        .requestMatchers("/css/**","/music/**","/images/**","/wwwroot/**", "/", "/oauth/**", "/user/register"
                                 , "/error","/user/login" ,"/category","/category/detail/*","/song/detail/**"
-                                ,"/search","/SearchSuggestions","/playlist/album")
+                                ,"/search","/SearchSuggestions","/playlist/album/**","/playlist/detail/**","/user/singer")
                         .permitAll()
                         .requestMatchers("/invoice/","/premium/","/song/like/**","/playlist/likeplaylist")
                         .hasAnyAuthority("USER","SINGER","ADMIN")

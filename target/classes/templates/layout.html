@@ -48,12 +48,16 @@
                     <a class="nav-link text-white active" aria-current="page"
                        href="/category" >Category</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white active" aria-current="page"
+                       href="/user/singer">Singer</a>
+                </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()&&!hasAuthority('ADMIN')">
                     <a class="nav-link text-white active" aria-current="page"
                        href="/song/manage">Quản lý</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page"
+                    <a class="nav-link text-white active" aria-current="page" sec:authorize="isAuthenticated()"
                        href="/premium">Premium</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
@@ -69,8 +73,8 @@
                        href="/playlist">Playlist</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page"
-                       href="/playlist/album">Album</a>
+                    <a class="nav-link text-white active" aria-current="page" sec:authorize="isAuthenticated()"
+                       th:href="@{/playlist/album/{id}(id=${#authentication.principal.userId})}">Album</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link text-white active" aria-current="page"

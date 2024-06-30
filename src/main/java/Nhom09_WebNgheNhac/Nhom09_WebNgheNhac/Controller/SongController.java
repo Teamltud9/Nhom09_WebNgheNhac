@@ -122,7 +122,8 @@ public class SongController {
         if(!(authentication instanceof AnonymousAuthenticationToken)){
             User user = (User) authentication.getPrincipal();
             Playlist playlist = playlistService.likePlaylist(user.getUserId(), 1);
-
+            List<Playlist> playlists = playlistService.getPlaylistsByUser(user).stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==2).toList();
+            model.addAttribute("playlists", playlists);
             songIds = playlist.getSongPlaylist()
                     .stream()
                     .map(Song::getSongId)
@@ -257,6 +258,8 @@ public class SongController {
     public String listQuanLi(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
+        List<Playlist> playlists = playlistService.getPlaylistsByUser(user).stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==3).toList();
+        model.addAttribute("playlists", playlists);
         model.addAttribute("songs",
                 songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId())));
         return "/song/manage-song";

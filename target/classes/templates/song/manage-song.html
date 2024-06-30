@@ -19,34 +19,58 @@
         <thead class="table-dark">
         <tr>
             <th>Image</th>
-            <td>Music</td>
             <th>Name</th>
-            <th>Time</th>
             <th>Category</th>
-            <th>Actions</th>
+            <th>Action</th>
+            <th>Albums</th>
+            <!--            <th sec:authorize="hasAuthority('SINGER')" >Actions</th>-->
         </tr>
         </thead>
         <tbody>
         <tr th:each="song : ${songs}">
-            <td>
-                <img th:src="@{${song.image}}"
-                     alt="${song.songName}" width="50" height="50">
-            </td>
-            <td>
-                <audio controls>
-                    <source th:src="@{${song.filePath}}" type="audio/mpeg">
-                </audio>
-            </td>
-            <td th:text="${song.songName}"></td>
-            <td th:text="${song.time}"></td>
+            <td class="ImageTH text-center align-middle" >
+                <a th:href="@{/song/detail/{id}(id=${song.songId})}">
+                    <img th:src="@{${song.image}}"
+                         alt="${song.songName}" width="50" height="50">
+                </a>
 
-            <td th:text="${song.category.categoryName}"></td>
-            <td th:if="${#authentication.principal.userId} == ${song.createByUser}">
-                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn btn-success btn-sm">Edit</a>
-                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
+            <td>
+                <a class="d-block fs-5 text-decoration-none fw-medium text-body-tertiary" th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
+                <span class="d-block" th:text="${song.time}"></span>
+            </td>
+            <td>
+                <p class="fs-4 fw-medium text-center align-middle text-uppercase text-body-tertiary" th:text="${song.category.categoryName}"></p>
+            </td>
+
+
+            <td th:if="${#authentication.principal.userId} == ${song.createByUser}">
+                <div  class="d-flex justify-content-around align-items-center">
+                    <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="p-2 fw-medium btn btn-warning btn-sm">Edit</a>
+                    <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="p-2 fw-medium btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+
+            </td>
+            <td>
+                <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
+                    <input type="hidden" name="songId" th:value="${song.songId}" />
+                    <select name="playlistId" class="form-select form-select-sm mb-2" required>
+                        <option value="">Select Albums</option>
+                        <option th:each="playlist : ${playlists}"
+                                th:value="${playlist.playlistId}"
+                                th:text="${playlist.playlistName}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Add to Albums</button>
+                </form>
+                <p th:if="${#lists.isEmpty(playlists)}">No albums available</p>
+            </td>
+
+
 
         </tr>
+
+
+
         </tbody>
     </table>
 </section>

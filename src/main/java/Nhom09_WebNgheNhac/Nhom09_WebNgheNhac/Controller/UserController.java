@@ -5,6 +5,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.RoleRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.SongService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
@@ -25,15 +26,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 @Controller // Đánh dấu lớp này là một Controller trong Spring MVC.
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
 
+    @Autowired
+    private SongService songService;
 
     private final UserService userService;
     @GetMapping("/login")
@@ -106,6 +112,13 @@ public class UserController {
 
     }
 
+
+/*
+*
+*
+*
+*
+* */
 
 
 
