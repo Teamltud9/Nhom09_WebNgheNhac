@@ -18,7 +18,7 @@
 <section layout:fragment="content">
     <h1 style="text-align:center" th:text="${playlist.playlistName}">Playlist Name</h1>
     <p th:if="${playlist.categoryPlaylist.categoryPlaylistId!=1}">Total songs:
-        <span th:text="${playlist.quantity}"></span>
+        <span th:text="${songQuantity}"></span>
     </p>
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
@@ -26,7 +26,7 @@
             <th class="text-center">Image</th>
             <th class="text-center">Name</th>
             <th class="text-center">Category</th>
-            <th class="text-center" sec:authorize="isAuthenticated()">Action</th>
+            <th class="text-center" sec:authorize="isAuthenticated()"  th:if="${#authentication.principal.userId==playlist.user.userId}">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -42,7 +42,7 @@
             <td>
                 <p class="fs-4 fw-medium text-center align-middle text-uppercase text-body-tertiary" th:text="${song.category.categoryName}"></p>
             </td>
-            <td sec:authorize="isAuthenticated()">
+            <td sec:authorize="isAuthenticated()"  th:if="${#authentication.principal.userId==playlist.user.userId}">
                 <form th:action="@{/playlist/remove-song/{id1}(id1=${playlist.playlistId})/{id}(id=${song.songId}}" method="post">
                     <input type="hidden" name="playlistId" th:value="${playlist.playlistId}">
                     <input type="hidden" name="songId" th:value="${song.songId}">

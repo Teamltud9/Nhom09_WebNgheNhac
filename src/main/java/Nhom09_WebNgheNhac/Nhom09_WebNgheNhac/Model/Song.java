@@ -24,13 +24,13 @@ public class Song {
     private int songId;
 
     @Column(nullable = false)
-    @NotEmpty(message = "Song Name không được để trống")
+    @NotEmpty(message = "Song name can not be null")
     private String songName;
 
     @Column(nullable = false)
-    @Past(message = "Release Date phải là ngày trong quá khứ")
+    @Past(message = "Release date must be in the past")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message="Release Date không được để trống")
+    @NotNull(message="Release date can not be null")
     private LocalDate releaseDate;
 
     @Column(nullable = false)

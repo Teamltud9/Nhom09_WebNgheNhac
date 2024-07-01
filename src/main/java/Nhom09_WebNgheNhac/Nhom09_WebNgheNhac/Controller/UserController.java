@@ -16,6 +16,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +47,11 @@ public class UserController {
     private final UserService userService;
     @GetMapping("/login")
     public String login() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken))
+        {
+            return "redirect:/";
+        }
         return "users/login";
     }
 
@@ -52,6 +60,11 @@ public class UserController {
     @GetMapping("/register")
     public String register(@NotNull Model model) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken))
+        {
+            return "redirect:/";
+        }
         model.addAttribute("user", new User()); // Thêm một đối tượng User mới vào
         //model
         return "users/register";

@@ -92,7 +92,7 @@ public class PlaylistController {
         playlistService.add(playlist);
 
         if(userLogin.getRoles().stream().anyMatch(p -> p.getRoleId().equals(Role.SINGER.value)))
-            return "redirect:/playlist/album";
+            return "redirect:/playlist/album/" + userLogin.getUserId();
         return "redirect:/playlist";
     }
 
@@ -126,6 +126,14 @@ public class PlaylistController {
         }
 
         playlistService.updatePlaylist(playlist);
+        Optional<Playlist> playlist1 = playlistService.getPlaylistById(playlistId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+
+        if(playlist1.get().getCategoryPlaylist().getCategoryPlaylistId() == 3)
+        {
+            return "redirect:/playlist/album/" + userLogin.getUserId();
+        }
         return "redirect:/playlist";
     }
 
@@ -139,7 +147,11 @@ public class PlaylistController {
             throw new AccessDeniedException("You don't have permission to delete this playlist");
         }
         playlistService.deletedById(playlistId);
-        return "redirect:/playlist";
+        if(playlist.getCategoryPlaylist().getCategoryPlaylistId() == 3)
+        {
+            return "redirect:/playlist/album/" + currentUser.getUserId();
+        }
+        return "redirect:/playlist" ;
     }
 
     @PostMapping("/add-song")
@@ -147,15 +159,18 @@ public class PlaylistController {
                                     @RequestParam int songId,
                                     RedirectAttributes redirectAttributes,
                                     Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
         try {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User currentUser = (User) userService.loadUserByUsername(userDetails.getUsername());
-
             playlistService.addSongToPlaylist(playlistId, songId, currentUser);
             redirectAttributes.addFlashAttribute("message", "Song added to playlist successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
+        Playlist playlist = playlistService.getPlaylistById(playlistId)
+                                .orElseThrow();
+        if(playlist.getCategoryPlaylist().getCategoryPlaylistId() == 3)
+            return "redirect:/playlist/album/" + currentUser.getUserId();
         return "redirect:/playlist";
     }
 
@@ -164,7 +179,7 @@ public class PlaylistController {
         Optional<Playlist> playlistOptional = playlistService.getPlaylistById(playlistId);
         if (playlistOptional.isPresent()) {
             Playlist playlist = playlistOptional.get();
-
+            model.addAttribute("songQuantity", playlist.getSongPlaylist().stream().filter(s -> !s.isDelete()).count());
             
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             // Kiểm tra quyền truy cập

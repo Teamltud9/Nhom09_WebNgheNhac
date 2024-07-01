@@ -268,7 +268,7 @@ public class SongController {
         List<Playlist> playlists = playlistService.getPlaylistsByUser(user).stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==3).toList();
         model.addAttribute("playlists", playlists);
         model.addAttribute("songs",
-                songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId())));
+                songService.getAllSong().stream().filter(p -> p.getCreateByUser().equals(user.getUserId()) && !p.isDelete()));
         return "/song/manage-song";
     }
 

@@ -3,7 +3,7 @@
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security5" layout:decorate="~{layout}">
 
 <head>
-    <title th:text="${title} ?: 'Products'">Products</title>
+    <title th:text="${title} ?: 'Song'">Song</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -92,7 +92,7 @@
             <div class="catecon" th:each="cate : ${category}">
                 <a th:href="@{/category/detail/{id}(id=${cate.categoryId})}">
                     <img th:src="@{${cate.image}}" alt="chauw có">
-                    <label class="ten text-center">avkdsjbvkdsbvkdsbvkbdskvbdkbvkdsbvk</label>
+                    <label class="ten text-center" th:text="${cate.categoryName}"></label>
                 </a>
             </div>
         </div>
@@ -109,22 +109,22 @@
                 <form th:action="@{/search}" method="get" >
                     <input type="hidden" th:value="${query}" name="query">
                     <input type="hidden" th:value="tangdan" name="sapxep">
-                    <button type="submit" class="dau">Tăng dần</button>
+                    <button type="submit" class="dau">Yêu thích tăng dần</button>
                 </form>
                 <form th:action="@{/search}" method="get">
                     <input type="hidden" th:value="${query}" name="query">
                     <input type="hidden" th:value="giamdan" name="sapxep">
-                    <button type="submit">Được yêu thích nhất</button>
+                    <button type="submit">Yêu thích giảm dần</button>
                 </form>
             </div>
             <div th:if="${query == null}" style="display:flex">
                 <form th:action="@{/}" method="get">
                     <input type="hidden" th:value="tangdan" name="sapxep">
-                    <button type="submit" class="dau">Tăng dần</button>
+                    <button type="submit" class="dau">Yêu thích tăng dần</button>
                 </form>
                 <form th:action="@{/}" method="get">
                     <input type="hidden" th:value="giamdan" name="sapxep">
-                    <button type="submit">Được yêu thích nhất</button>
+                    <button type="submit">Yêu thích giảm dần</button>
                 </form>
             </div>
         </div>
@@ -134,7 +134,7 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th class="text-center">Category</th>
-                    <th class="text-center" sec:authorize="isAuthenticated()">Like</th>
+<!--                    <th class="text-center" sec:authorize="isAuthenticated()">Like</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -154,15 +154,15 @@
                             th:text="${song.category.categoryName}"></p>
                     </td>
 
-                    <td sec:authorize="isAuthenticated()" class="text-center">
+<!--                    <td sec:authorize="isAuthenticated()" class="text-center">
                         <a th:href="@{/song/like/{id}(id=${song.songId})}">
                             <button id="heartButton" class="heart-button text-center">
                                 <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
                                 <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
                             </button></a>
-                        <!-- <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
-                       class="btn btn-success btn-sm">Report</a> -->
-                    </td>
+                        &lt;!&ndash; <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+                       class="btn btn-success btn-sm">Report</a> &ndash;&gt;
+                    </td>-->
 
 
 

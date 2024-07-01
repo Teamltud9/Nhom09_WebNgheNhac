@@ -110,6 +110,7 @@ public class PlaylistService {
             playlistRepository.save(playlist);
         }
     }
+
     public void removeSongFromPlaylist(int playlistId, int songId, User currentUser) {
         Playlist playlist = getPlaylistById(playlistId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid playlist Id:" + playlistId));
@@ -120,7 +121,6 @@ public class PlaylistService {
 
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
-
         if (playlist.getSongPlaylist().remove(song)) {
             playlist.setQuantity(playlist.getQuantity() - 1);
 
