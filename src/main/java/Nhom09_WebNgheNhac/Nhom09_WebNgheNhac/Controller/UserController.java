@@ -119,6 +119,24 @@ public class UserController {
 *
 *
 * */
+    @GetMapping("/singer")
+    public String getSinger(Model model){
+
+        List<Song> songs = songService.getAllSong();
+        List<Long> idUser = songs.stream()
+                .map(Song::getCreateByUser)
+                .distinct()
+                .toList();
+
+        List<User> users = new ArrayList<>();
+
+        for (long id : idUser){
+            users.add(userService.getUserId(id).get());
+        }
+
+        model.addAttribute("users", users);
+        return "/users/list-singer";
+    }
 
 
 

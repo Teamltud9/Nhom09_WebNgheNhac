@@ -223,5 +223,15 @@ public class PlaylistController {
 
         return "redirect:/playlist/detail/"+playlist.getPlaylistId();
     }
+    @GetMapping("/album/{userId}")
+    public String showAlbums(@PathVariable("userId") int userId,Model model)
+    {
+        model.addAttribute("albums", playlistService.getAlbum()
+                .stream().filter(p -> !p.isDelete())
+                .filter(p->p.getUser().getUserId()==userId&& p.getCategoryPlaylist().getCategoryPlaylistId()==3)
+                .toList());
+        model.addAttribute("user",userId);
+        return "playlist/list-album";
+    }
 }
 
