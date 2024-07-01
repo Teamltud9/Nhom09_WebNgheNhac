@@ -107,7 +107,6 @@ public class PlaylistService {
         if (!playlist.getSongPlaylist().contains(song)) {
             playlist.getSongPlaylist().add(song);
             playlist.setQuantity(playlist.getQuantity() + 1);
-            playlistRepository.save(playlist);
         }
     }
 
@@ -126,7 +125,7 @@ public class PlaylistService {
 
             song.setLikeCount(song.getLikeCount()-1);
             songRepository.save(song);
-            playlistRepository.save(playlist);
+
         } else {
             throw new IllegalStateException("Song is not in the playlist");
         }

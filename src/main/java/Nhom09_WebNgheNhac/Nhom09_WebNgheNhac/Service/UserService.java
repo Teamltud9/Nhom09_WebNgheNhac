@@ -67,6 +67,7 @@ public class UserService implements UserDetailsService {
         user.setPremium(false);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
+        user.getRoles().add(roleRepository.findRoleByRoleId(Role.USER.value));
         user.setDelete(false);
         user.setCountReport(0);
 

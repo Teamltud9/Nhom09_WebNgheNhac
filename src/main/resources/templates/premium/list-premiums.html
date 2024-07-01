@@ -32,8 +32,10 @@
             <td th:text="${premium.duration}"></td>
             <td sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/premium/edit/{id}(id=${premium.premiumId})}" class="btn btn-success btn-sm">Edit</a>
-                <a th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
-                   class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                <a th:if="${!category.isDelete}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
+                   class="btn btn-danger btn-sm p-2 px-3 fs-6" >DELETED</a>
+                <a th:if="${category.isDelete}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
+                   class="btn btn-warning btn-sm p-2 px-3 fs-6" >SHOW</a>
 
             </td>
             <td sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')">
