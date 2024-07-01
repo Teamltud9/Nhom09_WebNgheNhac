@@ -57,8 +57,7 @@ public class PlaylistService {
 
 
     public Playlist likePlaylist(Long userId, int CategoryPlaylistId){
-        Optional<Playlist> playlist = getAll().stream()
-                .filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==CategoryPlaylistId && p.getUser().getUserId().equals(userId)).findFirst();
+        Optional<Playlist> playlist = getAll().stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()==CategoryPlaylistId && p.getUser().getUserId().equals(userId)).findFirst();
         return playlist.get();
     }
 
@@ -84,19 +83,6 @@ public class PlaylistService {
         playlistRepository.save(ex_playlist);
     }
 
-    public List<Playlist> getAlbum()
-    {
-        return playlistRepository.findAll().stream()
-                .filter(p -> p.getCategoryPlaylist().getCategoryPlaylistId() == 3).toList();
-    }
-
-    public void deletedById(int id) {
-        Playlist playlist = playlistRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Playlist does not exist."));
-        playlist.setDelete(!playlist.isDelete());
-        playlistRepository.save(playlist);
-    }
-
     public void addSongToPlaylist(int playlistId, int songId, User user) throws Exception {
         Playlist playlist = playlistRepository.findByPlaylistIdAndUser(playlistId, user)
                 .orElseThrow(() -> new AccessDeniedException("You don't have permission to modify this playlist"));
@@ -110,7 +96,6 @@ public class PlaylistService {
             playlistRepository.save(playlist);
         }
     }
-
     public void removeSongFromPlaylist(int playlistId, int songId, User currentUser) {
         Playlist playlist = getPlaylistById(playlistId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid playlist Id:" + playlistId));
@@ -121,14 +106,23 @@ public class PlaylistService {
 
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
+
         if (playlist.getSongPlaylist().remove(song)) {
             playlist.setQuantity(playlist.getQuantity() - 1);
-
-            song.setLikeCount(song.getLikeCount()-1);
-            songRepository.save(song);
             playlistRepository.save(playlist);
         } else {
             throw new IllegalStateException("Song is not in the playlist");
         }
+    }
+    public void deletedById(int id) {
+        Playlist playlist = playlistRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Playlist does not exist."));
+        playlist.setDelete(!playlist.isDelete());
+        playlistRepository.save(playlist);
+    }
+    public List<Playlist> getAlbum()
+    {
+        return playlistRepository.findAll().stream()
+                .filter(p -> p.getCategoryPlaylist().getCategoryPlaylistId() == 3).toList();
     }
 }

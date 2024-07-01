@@ -5,6 +5,7 @@ import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.CategoryPlaylistRepository;
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Repository.PlaylistRepository;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Role;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.PlaylistService;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Service.UserService;
@@ -41,6 +42,9 @@ public class PlaylistController {
 
     @Autowired
     private CategoryPlaylistRepository categoryPlaylistRepository;
+
+    @Autowired
+    private PlaylistRepository playlistRepository;
 
     @GetMapping("")
     public String showUserPlaylists(Model model, Principal principal) {
