@@ -21,6 +21,8 @@
             <th>Name</th>
             <th>Price</th>
             <th>Duration</th>
+            <th sec:authorize="hasAuthority('ADMIN')"> Delete</th>
+
             <th sec:authorize="hasAuthority('ADMIN')">Action</th>
             <th sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')">Purchase</th>
         </tr>
@@ -31,10 +33,13 @@
             <td th:text="${premium.price}"></td>
             <td th:text="${premium.duration}"></td>
             <td sec:authorize="hasAuthority('ADMIN')">
+                <input type="checkbox" th:checked="${premium.isDeleted}" disabled="disabled">
+            </td>
+            <td sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/premium/edit/{id}(id=${premium.premiumId})}" class="btn btn-success btn-sm">Edit</a>
-                <a th:if="${!category.isDelete}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
+                <a th:if="${!premium.isDeleted}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
                    class="btn btn-danger btn-sm p-2 px-3 fs-6" >DELETED</a>
-                <a th:if="${category.isDelete}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
+                <a th:if="${premium.isDeleted}" style="float: right;" th:href="@{/premium/delete/{id}(id=${premium.premiumId})}"
                    class="btn btn-warning btn-sm p-2 px-3 fs-6" >SHOW</a>
 
             </td>
