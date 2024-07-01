@@ -20,6 +20,7 @@ HELP.md
 *.ipr
 
 ### NetBeans ###
+/target
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -27,7 +28,9 @@ HELP.md
 /.nb-gradle/
 build/
 !**/src/main/**/build/
-!**/src/test/**/build/
+!**/src/test/**/build
+/target
 
 ### VS Code ###
 .vscode/
+

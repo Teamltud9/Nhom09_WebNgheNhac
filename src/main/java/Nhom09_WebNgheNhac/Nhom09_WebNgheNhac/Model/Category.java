@@ -21,6 +21,9 @@ public class Category {
     private String categoryName;
 
     @Column(nullable = false)
+    private boolean isDelete;
+
+    @Column(nullable = false)
     private String image;
 
     @OneToMany(mappedBy = "category")

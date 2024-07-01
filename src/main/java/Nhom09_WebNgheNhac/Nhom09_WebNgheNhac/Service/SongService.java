@@ -8,6 +8,8 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +32,41 @@ public class SongService {
 
     private final SongRepository songRepository;
 
-    public List<Song> searchSong(String query) {
-        return songRepository.findBySongNameContainingIgnoreCase(query);
-    }
+    private final UserRepository userRepository;
+
+
+
+
     public List<Song> getAllSong(){
         return songRepository.findAll();
     }
-    public Song addSong(Song song) {
+    public Song addSong(Song song,String singers) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = (User) authentication.getPrincipal();
+        song.setCreateByUser(userLogin.getUserId());
+
+
+        Optional<User> user1 = userRepository.findById(userLogin.getUserId());
+        Set<User> singer = new HashSet<>();
+        singer.add(user1.get());
+
+        if(!singers.isEmpty()){
+            String[] parts = singers.split(",");
+
+            List<Long> selectedNgheSiIds = Arrays.stream(parts)
+                    .map(Long::parseLong)
+                    .toList();
+            for (Long userId : selectedNgheSiIds){
+                Optional<User> user = userRepository.findById(userId);
+                singer.add(user.get());
+            }
+        }
+
+        song.setPremium(!user1.get().getCountry().equals("Vietnam"));
+        song.setUsers(singer);
+        song.setDelete(false);
+
+
         return songRepository.save(song);
     }
     public Optional<Song> getSongId(int id) {
@@ -52,20 +80,17 @@ public class SongService {
         existingsSong.setSongName(song.getSongName());
         existingsSong.setReleaseDate(song.getReleaseDate());
         existingsSong.setCategory(song.getCategory());
-        existingsSong.setSinger(song.getSinger());
         existingsSong.setTime(song.getTime());
         existingsSong.setImage(song.getImage());
         existingsSong.setFilePath(song.getFilePath());
-
-
+        
         return songRepository.save(existingsSong);
     }
 
     public void deleteSongById(int id) {
-        if (!songRepository.existsById(id)) {
-            throw new IllegalStateException("Song with ID " + id + " does not exist.");
-        }
-        songRepository.deleteById(id);
+        Song song = songRepository.findById(id).orElseThrow(() -> new IllegalStateException("Song does not exist."));
+        song.setDelete(true);
+        songRepository.save(song);
     }
 
 
@@ -112,5 +137,38 @@ public class SongService {
     }
 
 
+    public List<Song> findByCategoryId(int categoryId) {
+        return songRepository.findByCategory_CategoryId(categoryId);
+    }
+    public List<Song> searchSong(String query) {
 
+        List<Song> songs = getAllSong();
+
+        return songs.stream()
+                .filter(title -> title.getSongName().toLowerCase().contains(query.toLowerCase()) || title.getUsers().stream().anyMatch(p->p.getFullName().toLowerCase().contains(query.toLowerCase())))
+                .filter(s->!s.isDelete())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> SearchSuggestions(String query) {
+        List<Song> songs = getAllSong().stream().filter(p->!p.isDelete()).toList();
+        List<String> suggestions = new ArrayList<>();
+
+        songs.stream()
+                .filter(song -> song.getSongName().toLowerCase().contains(query.toLowerCase()) ||
+                        song.getUsers().stream().anyMatch(user -> user.getFullName().toLowerCase().contains(query.toLowerCase())))
+                .forEach(song -> {
+                    if (song.getSongName().toLowerCase().contains(query.toLowerCase())) {
+                        suggestions.add(song.getSongName());
+                    }
+                    else{
+                        song.getUsers().stream()
+                                .filter(user -> user.getFullName().toLowerCase().contains(query.toLowerCase()))
+                                .forEach(user -> suggestions.add(user.getFullName()));
+                    }
+
+                });
+
+        return suggestions;
+    }
 }

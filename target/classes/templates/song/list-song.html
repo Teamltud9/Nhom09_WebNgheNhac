@@ -1,52 +1,183 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security5" layout:decorate="~{layout}">
+
 <head>
-    <title th:text="${title} ?: 'Products'">Products</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title th:text="${title} ?: 'Song'">Song</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .heart-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #ff0000;
+            font-size: 24px;
+        }
+
+        .ImageTH {
+            width: 80px;
+            height: 80px;
+        }
+
+        .listCategory label {
+            display: block;
+            font-weight: 500;
+        }
+
+        .catecon img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .catecon a{
+            text-decoration: none;
+            color: black;
+        }
+
+        .listCategory {
+            padding: 10px;
+            border-block: 1px solid black;
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+
+            overflow-y: hidden;
+
+            white-space: nowrap;
+
+            width: 100%;
+
+        }
+
+        .listCategory>* {
+            flex-shrink: 0;
+            /* Ngăn các phần tử con co lại */
+        }
+
+        .ten {
+            display: inline-block;
+            
+            width: 120px;
+           
+            white-space: nowrap;
+           
+            overflow: hidden;
+            
+            text-overflow: ellipsis;
+           
+            text-align: center;
+        }
+        .sapxep button{
+            border: none;
+            background-color: #333;
+            color: aliceblue;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 10px;
+        }
+        .dau{
+            margin-left: 0 !important;
+        }
+    </style>
 </head>
+
 <body>
-<section layout:fragment="content">
-    <h1 style="text-align:center">Songs List</h1>
-    <div sec:authorize="hasAuthority('ADMIN')">
+    <section layout:fragment="content">
+        <h1 style="text-align:center;margin-bottom: 15px;">Category List</h1>
+        <div class="listCategory">
+            <div class="catecon" th:each="cate : ${category}">
+                <a th:href="@{/category/detail/{id}(id=${cate.categoryId})}">
+                    <img th:src="@{${cate.image}}" alt="chauw có">
+                    <label class="ten text-center" th:text="${cate.categoryName}"></label>
+                </a>
+            </div>
+        </div>
+
+
+
+        <h1 style="text-align:center;margin-bottom: 15px;">Songs List</h1>
+        <!-- <div sec:authorize="hasAuthority('SINGER')">
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Song</a>
-    </div>
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Singer</th>
-            <th>Category</th>
-            <th sec:authorize="hasAuthority('ADMIN')">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="song : ${songs}">
-            <td>
-                <img th:src="@{${song.image}}"
-                     alt="${song.songName}" width="50" height="50">
-            </td>
-            <td th:text="${song.songName}"></td>
-            <td th:text="${song.time}"></td>
+    </div>-->
+        <div class="sapxep"> 
+            <div th:if="${query != null}" style="display:flex" >
+                <form th:action="@{/search}" method="get" >
+                    <input type="hidden" th:value="${query}" name="query">
+                    <input type="hidden" th:value="tangdan" name="sapxep">
+                    <button type="submit" class="dau">Yêu thích tăng dần</button>
+                </form>
+                <form th:action="@{/search}" method="get">
+                    <input type="hidden" th:value="${query}" name="query">
+                    <input type="hidden" th:value="giamdan" name="sapxep">
+                    <button type="submit">Yêu thích giảm dần</button>
+                </form>
+            </div>
+            <div th:if="${query == null}" style="display:flex">
+                <form th:action="@{/}" method="get">
+                    <input type="hidden" th:value="tangdan" name="sapxep">
+                    <button type="submit" class="dau">Yêu thích tăng dần</button>
+                </form>
+                <form th:action="@{/}" method="get">
+                    <input type="hidden" th:value="giamdan" name="sapxep">
+                    <button type="submit">Yêu thích giảm dần</button>
+                </form>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th class="text-center">Category</th>
+<!--                    <th class="text-center" sec:authorize="isAuthenticated()">Like</th>-->
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="song : ${songs}">
+                    <td class="ImageTH text-center align-middle">
+                        <a th:href="@{/song/detail/{id}(id=${song.songId})}">
+                            <img th:src="@{${song.image}}" alt="${song.songName}" width="50" height="50">
+                        </a>
+                    </td>
+                    <td>
+                        <a class="d-block fs-5 text-decoration-none fw-medium text-body-tertiary"
+                            th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
+                        <span class="d-block" th:text="${song.time}"></span>
+                    </td>
+                    <td>
+                        <p class="fs-4 fw-medium text-center align-middle text-uppercase text-body-tertiary"
+                            th:text="${song.category.categoryName}"></p>
+                    </td>
 
-            <td th:text="${song.singer.singerName}"></td>
-            <td th:text="${song.category.categoryName}"></td>
-            <td sec:authorize="hasAuthority('ADMIN')">
-                <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="btn
-btn-success btn-sm">Edit</a>
-                <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="btn
-btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
+<!--                    <td sec:authorize="isAuthenticated()" class="text-center">
+                        <a th:href="@{/song/like/{id}(id=${song.songId})}">
+                            <button id="heartButton" class="heart-button text-center">
+                                <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
+                                <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
+                            </button></a>
+                        &lt;!&ndash; <a th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
+                       class="btn btn-success btn-sm">Report</a> &ndash;&gt;
+                    </td>-->
 
-        </tr>
-        </tbody>
-    </table>
-</section>
+
+
+
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+    </section>
 </body>
+
 </html>

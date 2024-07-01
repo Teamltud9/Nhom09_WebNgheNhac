@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${title != null ? title : 'Categories-Playlist List'}">Categories-Playlist List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <h1 class="text-center">Category-Playlist List</h1>
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/categoryplaylist/add}" class="btn btn-primary mb-3">Add New Category-Playlist</a>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th sec:authorize="hasAuthority('ADMIN')">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="category : ${categoryplaylist}">
+            <td th:text="${category.categoryPlaylistName}"></td>
+            <td sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/categoryplaylist/edit/{id}(id=${category.categoryPlaylistId})}" class="btn btn-success btn-sm">Edit</a>
+                <a th:href="@{/categoryplaylist/delete/{id}(id=${category.categoryPlaylistId})}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

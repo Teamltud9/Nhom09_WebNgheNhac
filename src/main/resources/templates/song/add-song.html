@@ -6,9 +6,24 @@
     <title>Add Product</title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+          <style>
+            .formSong{
+                padding: 20px 30px;
+                width: 70%;
+            }
+            .formSong h1{
+                margin-left: 40%;
+            }
+            .btn1{
+                padding: 11px 30px;
+            }
+            .form-control{
+                padding: 8px !important;
+            }
+          </style>
 </head>
 <body>
-<section layout:fragment="content" class="container mt-5">
+<section layout:fragment="content" class="container mt-5 formSong">
     <h1>Form Song</h1>
 
     <form th:action="@{/song/add}" th:object="${song}" method="post" enctype="multipart/form-data" >
@@ -19,30 +34,25 @@
             <div class="text-danger" th:if="${#fields.hasErrors('songName')}"
                  th:errors="*{songName}"></div>
         </div>
-
-        <div class="mb-3">
-            <label for="category" class="form-label">Category:</label>
-            <select th:field="*{category}" class="form-control" id="category">
-                <option th:each="category : ${categories}" th:value="${category.categoryId}"
-                        th:text="${category.categoryName}"></option>
-            </select>
+        <div style="display: flex;justify-content: space-between;">
+            <div style="width: 50%;margin-right: 10px;">
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <select th:field="*{category}" class="form-control" id="category">
+                        <option th:each="category : ${categories}" th:value="${category.categoryId}"
+                                th:text="${category.categoryName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div style="width: 50%;">
+                <div class="mb-3">
+                    <label for="releaseDate" class="form-label">Release Date:</label>
+                    <input type="date" th:field="*{releaseDate}" class="form-control" id="releaseDate"
+                           required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('releaseDate')}" th:errors="*{releaseDate}"></div>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="singer" class="form-label">Singer:</label>
-            <select th:field="*{singer}" class="form-control" id="singer">
-                <option th:each="singer : ${singers}" th:value="${singer.singerId}"
-                        th:text="${singer.singerName}"></option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="releaseDate" class="form-label">Release Date:</label>
-            <input type="date" th:field="*{releaseDate}" class="form-control" id="releaseDate"
-                   required>
-            <div class="text-danger" th:if="${#fields.hasErrors('releaseDate')}" th:errors="*{releaseDate}"></div>
-        </div>
-
 
         <div class="mb-3">
             <label class="form-label">Images: </label>
@@ -54,10 +64,32 @@
             <input type="file" class="form-control"  name="fileMp3"  accept="audio/mpeg, audio/mp3" required>
         </div>
 
+        <div style="display: flex;justify-content: space-between;margin-bottom: 20px;">
+            <div class="form-group" style="display: flex; width: 50%;">
+                <div style="width: 80%;margin-right: 10px;">
+                    <label class="form-label" for="artistSelect">Chọn nghệ sĩ hợp tác:</label>
+                    <select id="artistSelect" class="form-control">
+                        <option th:each="singer : ${singers}" th:value="${singer.userId}"
+                                th:text="${singer.userName}"></option>
+                    </select>
+                </div>
+                
+                <button style="width: 20%;height: 40px;margin-top: 33px !important;" id="addArtistButton" type="button" class="btn btn-primary mt-2">Thêm</button>
+            </div>
+            
+            <div style="font-size: 45px;margin-top: 10px;opacity: 0.5;margin-inline: 10px;">|</div>
+    
+            <div class="form-group" style="width: 50%;">
+                <label class="form-label" for="selectedArtists">Nghệ sĩ đã chọn:</label>
+                <select id="selectedArtists" name="selectedArtists" class="form-control" ></select>
+            </div>
+        </div>
+        
 
+        <input type="hidden" name="selectedNgheSiList" id="selectedNgheSiList" />
 
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a th:href="@{/}" class="btn btn-link">Cancel</a>
+        <button type="submit" class="btn btn-primary btn1" style="margin-left: 38%;" id="submit">Create</button>
+        <a th:href="@{/}" class="btn btn1" style="background-color: darkgray;margin-left: 20px;">Cancel</a>
     </form>
 </section>
 <script

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Edit</title>
+    <style>
+        .formDN{
+            width: 50% !important;
+            padding: 20px 25px;
+            margin: auto;
+            border-radius: 15px;
+        }
+        .formDN h1{
+            margin-inline: 45%;
+            margin-bottom: 0px !important;
+        }
+        
+    </style>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="content" class="container mt-5 formDN">
+    <h1 class="mb-4">Profile</h1>
+    <form th:action="@{/user/edit/{id}(id=${user.userId})}" th:object="${user}" method="post" enctype="multipart/form-data">
+
+
+        <div class="form-group mb-4">
+            <label for="userName"></label>
+            <input type="text" th:field="*{userName}" class="form-control" id="userName" name="userName"
+                   placeholder="Enter your userName">
+            <div class="text-danger" th:if="${#fields.hasErrors('userName')}"
+                 th:errors="*{userName}"></div>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="fullName"></label>
+            <input type="text" th:field="*{fullName}" class="form-control" id="fullName" name="fullName"
+                   placeholder="Enter your fullName">
+            <div class="text-danger" th:if="${#fields.hasErrors('fullName')}"
+                 th:errors="*{fullName}"></div>
+        </div>
+
+
+        <div class="form-group mb-4">
+            <label for="phoneNumber"></label>
+            <input type="tel" th:field="*{phoneNumber}" class="form-control" id="phoneNumber" name="phoneNumber" maxlength="10"
+                   placeholder="Enter your phoneNumber">
+            <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}"
+                 th:errors="*{phoneNumber}"></div>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="email"></label>
+            <input type="email" th:field="*{email}" class="form-control" id="email" name="email"
+                   placeholder="Enter your email">
+            <div class="text-danger" th:if="${#fields.hasErrors('email')}"
+                 th:errors="*{email}"></div>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="password"></label>
+            <input type="password" th:field="*{password}" class="form-control" id="password"
+                   name="password" placeholder="Enter your password">
+            <div class="text-danger" th:if="${#fields.hasErrors('password')}"
+                 th:errors="*{password}"></div>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="birthDate"></label>
+            <input type="date" th:field="*{birthDate}" class="form-control" id="birthDate"
+                   name="birthDate" placeholder="Enter your birthDate">
+            <div class="text-danger" th:if="${#fields.hasErrors('birthDate')}"
+                 th:errors="*{birthDate}"></div>
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label">Images: </label>
+            <input type="file" class="form-control" name="imageFile"  accept="image/*">
+        </div>
+
+
+
+        <div class="d-grid gap-2 form-action">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Save</button>
+
+        </div>
+    </form>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

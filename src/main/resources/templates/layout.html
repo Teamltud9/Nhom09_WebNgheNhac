@@ -1,116 +1,177 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
 <head>
     <meta charset="UTF-8">
     <title>Layout</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/site.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link th:fragment="custom-css" rel="stylesheet" th:href="@{/wwwroot/css/style.css}">
+    <style>
+        .menu_cha {}
+
+        .menu {
+            margin-top: 15px;
+            padding: 0;
+            position: absolute;
+            background-color: rgb(255, 255, 255);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            gap: 0;
+        }
+
+        .menu li {
+            padding: 0 20px !important;
+        }
+
+        .menu li:hover {
+            background-color: beige;
+        }
+
+        .menu a {
+            color: black !important;
+        }
+
+        details summary {
+            list-style: none;
+            margin-right: 15px;
+        }
+        .formSearch{
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            height: 50px;
+            padding: 3.8px;
+            border-radius: 5px;
+        }
+        .formSearch .button{
+           border: none !important; 
+        }
+        .formSearch input{
+            border: none;
+        }
+        .btn:hover{
+            background-color: white !important;
+        }
+    
+    </style>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-primary">
-    <div class="container-fluid">
-        <a class="navbar-brand text-white" href="/">Web Nghe Nhạc</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page"
-                       href="/">Song</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page"
-                       href="/category">Category</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white active" aria-current="page"
-                       href="/singer">Singer</a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="/">Web Nghe Nhạc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white active" aria-current="page" href="/">Song</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white active" aria-current="page" href="/category">Category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white active" aria-current="page" href="/user/singer">Singer</a>
+                    </li>
 
-            <div>
-                <form id="search-form" class="d-flex" th:action="@{/search}" method="get">
-                    <div class="input-group">
-                        <input id="search-input" class="form-control me-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" name="query" required>
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                        <div id="search-results" class="dropdown-content w-100"></div>
-                    </div>
-                </form>
-            </div>
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-                <li class="nav-item d-flex align-items-center"
-                    sec:authorize="isAuthenticated()">
-                     <span class="navbar-text text-white">
-                     Xin chào, <span sec:authentication="name" style="marginright: 20px;"></span>
-                     </span>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form th:action="@{/user/logout}" method="post">
-                        <button class="btn btn-outline-light"
-                                type="submit">Logout</button>
+                </ul>
+
+                <div class="formSearch">
+                   
+                    <form id="search-form" class="d-flex search" th:action="@{/search}" method="get">
+                        <div class="input-group">
+                            <button class="btn btn-outline-success button" type="submit">
+                                <img width="30" height="30" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"/>
+                            </button>
+                            <i style="font-size: 30px;margin-top: -5px;opacity: 0.5;">|</i>
+                            <input id="search-input" class="form-control me-2" type="search" autocomplete="off"
+                                placeholder="Search" aria-label="Search" name="query" required>
+                            <div id="search-results" class="dropdown-content w-100"></div>
+                        </div>
                     </form>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="btn btn-outline-light" href="/user/login">Login</a>
-                </li>
-            </ul>
+                   
+                </div>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                    <details class="menu_cha">
+                        <summary><img width="24" height="24" src="https://img.icons8.com/ios/50/menu--v7.png"
+                                alt="menu--v7" /></summary>
+                        <div class="menu">
+
+                            <li class="nav-item" sec:authorize="isAuthenticated()&&!hasAuthority('ADMIN')">
+                                <a class="nav-link text-white active" aria-current="page" href="/song/manage">Quản
+                                    lý</a>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white active" aria-current="page"
+                                    sec:authorize="isAuthenticated()" href="/premium">Premium</a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="isAuthenticated()">
+                                <a class="nav-link text-white active" aria-current="page" href="/invoice">Invoice</a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                                <a class="nav-link text-white active" aria-current="page" href="/report">Report</a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')">
+                                <a class="nav-link text-white active" aria-current="page" href="/playlist">Playlist</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white active" aria-current="page"
+                                    sec:authorize="hasAuthority('USER')||hasAuthority('SINGER')"
+                                    th:href="@{/playlist/album/{id}(id=${#authentication.principal.userId})}">Album</a>
+                            </li>
+
+                            <li class="nav-item" sec:authorize="isAuthenticated()">
+                                <a class="nav-link text-white active" aria-current="page"
+                                    href="/playlist/likeplaylist">Favourite</a>
+                            </li>
+
+                        </div>
+
+                    </details>
+
+                    <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/user/edit/{id}(id=${#authentication.principal.userId})}">
+                            <img th:src="${#authentication.principal.image}"
+                                style="width:30px;height:30px;border-radius: 50%;" alt="User Image" />
+
+                            <span sec:authentication="name" class="navbar-text text-white"
+                                style="margin-right: 20px;"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/user/logout}" method="post">
+                            <button class="btn btn-outline-light" type="submit">Logout</button>
+                        </form>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="btn btn-outline-light" href="/user/login">Login</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+    </nav>
+    <div class="container mt-5">
+        <section layout:fragment="content">
+            <!-- Nội dung cụ thể của từng trang sẽ được đặt tại đây -->
+        </section>
     </div>
-</nav>
-<div class="container mt-5">
-    <section layout:fragment="content">
-        <!-- Nội dung cụ thể của từng trang sẽ được đặt tại đây -->
-    </section>
-</div>
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script th:src="@{/wwwroot/js/main.js}"></script>
 
-<script>
-    $(document).ready(function () {
-            $("#search-input").on("keyup", function () {
-                console.log("Key pressed:", event.key);
-                var query = $(this).val();
-                if (query !== '') {
-                    $.ajax({
-                        url: "/SearchSuggestions",
-                        type: "GET",
-                        data: { query: query },
-                        dataType: "json",
-                        success: function (data) {
-                            $("#search-results").empty();
-                            $.each(data, function (index, suggestion) {
-                                $("#search-results").append("<div class='suggestion'>" + suggestion + "</div>");
-                            });
-                            $(".dropdown-content").show();
-                        },
-                        error: function (xhr, status, error) {
-                            console.log("Lỗi:", error);
-                        }
-                    });
-                } else {
-                    $("#search-results").empty();
-                    $(".dropdown-content").hide();
-                }
-            });
-            $(document).on("click", ".suggestion", function () {
-                var selectedSuggestion = $(this).text();
-                $("#search-input").val(selectedSuggestion);
-                $("#search-results").empty();
-                $(".dropdown-content").hide();
-            });
-
-            $(document).on("click", function (event) {
-                if (!$(event.target).closest('.dropdown').length) {
-                    $(".dropdown-content").hide();
-                }
-            });
-        });
-</script>
 </body>
+
 </html>

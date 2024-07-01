@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security5"
+      layout:decorate="~{layout}">
+<head>
+    <title th:text="${title} ?: 'Products'">Products</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<section layout:fragment="content">
+    <h1 style="text-align:center">Songs List</h1>
+    <div sec:authorize="hasAuthority('SINGER')">
+        <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
+            Song</a>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Action</th>
+            <th>Albums</th>
+            <!--            <th sec:authorize="hasAuthority('SINGER')" >Actions</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="song : ${songs}">
+            <td class="ImageTH text-center align-middle" >
+                <a th:href="@{/song/detail/{id}(id=${song.songId})}">
+                    <img th:src="@{${song.image}}"
+                         alt="${song.songName}" width="50" height="50">
+                </a>
+
+            </td>
+            <td>
+                <a class="d-block fs-5 text-decoration-none fw-medium text-body-tertiary" th:href="@{/song/detail/{id}(id=${song.songId})}" th:text="${song.songName}"></a>
+                <span class="d-block" th:text="${song.time}"></span>
+            </td>
+            <td>
+                <p class="fs-4 fw-medium text-center align-middle text-uppercase text-body-tertiary" th:text="${song.category.categoryName}"></p>
+            </td>
+
+
+            <td th:if="${#authentication.principal.userId} == ${song.createByUser}">
+                <div  class="d-flex justify-content-around align-items-center">
+                    <a th:href="@{/song/edit/{id}(id=${song.songId})}" class="p-2 fw-medium btn btn-warning btn-sm">Edit</a>
+                    <a th:href="@{/song/delete/{id}(id=${song.songId})}" class="p-2 fw-medium btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+
+            </td>
+            <td>
+                <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
+                    <input type="hidden" name="songId" th:value="${song.songId}" />
+                    <select name="playlistId" class="form-select form-select-sm mb-2" required>
+                        <option value="">Select Albums</option>
+                        <option th:each="playlist : ${playlists}"
+                                th:value="${playlist.playlistId}"
+                                th:text="${playlist.playlistName}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Add to Albums</button>
+                </form>
+                <p th:if="${#lists.isEmpty(playlists)}">No albums available</p>
+            </td>
+
+
+
+        </tr>
+
+
+
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

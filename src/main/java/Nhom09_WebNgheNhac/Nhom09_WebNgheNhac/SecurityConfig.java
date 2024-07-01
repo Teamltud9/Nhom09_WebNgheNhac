@@ -37,12 +37,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(@NotNull HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**", "/js/**", "/", "/oauth/**", "/user/register", "/error", "/" ,"/user/login" ,"/category" , "/singer")
-                        .permitAll() // Cho phép truy cập không cần xác thực.
-                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete" ,"/category/edit/**" , "/category/add" , "/category/delete" ,"/singer/edit/**" , "/singer/add" , "/singer/delete")
-                        .hasAnyAuthority("ADMIN") // Chỉ cho phép ADMIN truy cập.
-                        .requestMatchers("/api/**")
-                        .permitAll() // API mở cho mọi người dùng.
+                        .requestMatchers("/css/**","/music/**","/images/**","/wwwroot/**", "/", "/oauth/**", "/user/register"
+                                , "/error","/user/login" ,"/category","/category/detail/*","/song/detail/**"
+                                ,"/search","/SearchSuggestions","/playlist/album/**","/playlist/detail/**","/user/singer")
+                        .permitAll()
+                        .requestMatchers("/invoice/","/premium/","/song/like/**","/playlist/likeplaylist")
+                        .hasAnyAuthority("USER","SINGER","ADMIN")
+                        .requestMatchers("/invoice/add","/playlist/add","/playlist/edit/**","/playlist/delete/**"
+                                ,"/report/add/")
+                        .hasAnyAuthority("USER","SINGER")
+                        .requestMatchers("/song/edit/**", "/song/add", "/song/delete/**")
+                        .hasAuthority("SINGER")
+                        .requestMatchers("/category/edit/**" , "/category/add" , "/category/delete/**"
+                                ,"/premium/add","/premium/delete/**","/premium/edit/**","/report/", "/report/delete/**","/report/denied/**")
+                        .hasAuthority("ADMIN")
+
+
                         .anyRequest().authenticated() // Bất kỳ yêu cầu nào khác cần xác thực.
                 )
                 .logout(logout -> logout
@@ -67,7 +77,7 @@ public class SecurityConfig {
                         .userDetailsService(userDetailsService())
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedPage("/403") // Trang báo lỗi khi truy cập không được phép.
+                        .accessDeniedPage("/error") // Trang báo lỗi khi truy cập không được phép.
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .maximumSessions(1) // Giới hạn số phiên đăng nhập.
