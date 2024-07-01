@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -13,6 +14,7 @@
             color: #ff0000;
             font-size: 24px;
         }
+
         .custom-audio {
             width: 500px;
             margin: 20px auto;
@@ -37,7 +39,8 @@
             padding: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        .card{
+
+        .card {
             display: flex;
             flex-direction: column;
             padding: 10px 20px;
@@ -47,98 +50,137 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             align-items: center;
-            margin:30px auto;
+            margin: 30px auto;
             background-color: #f4f4f4;
             z-index: 99;
             position: relative;
             /* gap: 5px; */
-           
+
         }
-        .card .img{
+
+        .card .img {
             border-radius: 15px;
             width: 400px;
             height: 400px;
             object-fit: contain;
         }
-        .card label{
+
+        .card label {
             margin-bottom: 10px;
         }
-        .back{
-            width: 98%;
-            object-fit: cover;
+
+        .back {
+            width: 100%;
+            /* object-fit: cover; */
             position: absolute;
             opacity: 0.3;
-            height: 90%;
+            height: 100%;
             z-index: 1;
+            margin: 0 !important;
+            margin-top: -30px !important;
+
         }
-        .net{
+
+        .net {
+            margin-top: -10px;
             align-items: none;
             width: 100%;
             display: flex;
             justify-content: space-between;
         }
-        .net a,div{
+
+        .net a,
+        div {
             margin-top: 20px;
+        }
+        .list{
+            display: flex;
+
+        }
+        .list select{
+            height: 45px;
+        }
+        .list button{
+            height: 44px;
+        }
+        .listcha{
+            margin-top: -25px;
+            margin-bottom: -30px;
+        }
+        .nameSinger{
+            font-size: 20px;
+            
+
         }
     </style>
 </head>
+
 <body>
 
+    <img th:src="@{${song.image}}" class="back" alt="">
+    <div class="card">
 
+        <div class="net">
 
-    <!-- <div class="cha" th:style="'background-image: url(' + @{${song.image}} + ');'"> -->
-        <img th:src="@{${song.image}}" class="back" alt="">
-        <div class="card" >
-
-            <div class="net">
-
-
-
-                    <a href="/"><img width="30" height="30" src="https://img.icons8.com/ios-filled/50/back.png" alt="back"/></a>
-                    <div sec:authorize="isAuthenticated()">
-                        <a th:href="@{/song/like/{id}(id=${song.songId})}">
-                            <button id="heartButton" class="heart-button" >
-                                <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
-                                <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
-                            </button></a>
-                    </div>
-
-
-               
+            <a href="/"><img width="30" height="30" src="https://img.icons8.com/ios-filled/50/back.png"
+                    alt="back" /></a>
+            <div>
+                <a th:if="${#authentication.principal.userId!=song.createByUser}"
+                    th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}">
+                    <img width="30" height="30" style="margin-top: -5px;" src="https://img.icons8.com/color/48/000000/error--v1.png" alt="error--v1"/>
+                </a>
+                <a th:href="@{/song/like/{id}(id=${song.songId})}">
+                    <button id="heartButton" class="heart-button">
+                        <i class="fas fa-heart" th:if="${songIds.contains(song.songId)}"></i>
+                        <i class="far fa-heart" th:if="${!songIds.contains(song.songId)}"></i>
+                    </button></a>
             </div>
-            <h2 class="text-center" th:text="@{${song.songName}}"></h2>
-            <!-- <label th:text="${song.create_by_user.userName}"></label> -->
-            <label th:text="${song.category.categoryName}"></label>
-            <img class="img" th:src="@{${song.image}}" >
-            <div th:if="${check}">
-                <audio controls class="custom-audio">
-                    <source th:src="@{${song.filePath}}" type="audio/mpeg">
-                </audio>
-            </div>
-            <div th:if="${!check}">
-                <p>Bạn không có quyền premium</p>
-            </div>
+
         </div>
-    <!-- </div> -->
-    <div sec:authorize="isAuthenticated()" th:if="${not #lists.isEmpty(playlists)}">
-        <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
-            <input type="hidden" name="songId" th:value="${song.songId}" />
-            <select name="playlistId" class="form-select form-select-sm mb-2" required>
-                <option value="">Select Playlist</option>
-                <option th:each="playlist : ${playlists}"
-                        th:value="${playlist.playlistId}"
-                        th:text="${playlist.playlistName}"></option>
-            </select>
-            <button type="submit" class="btn btn-primary btn-sm">Add to Playlist</button>
-        </form>
-        <p th:if="${#lists.isEmpty(playlists)}">No playlists available</p>
+        <img class="img" th:src="@{${song.image}}">
+        <h2 class="text-center" th:text="@{${song.songName}}"></h2>
+        <div class="" style="display: flex;gap: 10px;margin-top: -5px;">
+            <label class="nameSinger" th:text="${userName}"></label>
+            <label style="margin-top: 5px;" th:text="'Thể loại: '+ ${song.category.categoryName}"></label>
+        </div>
+        
+
+        <div class="listcha" sec:authorize="isAuthenticated()" th:if="${not #lists.isEmpty(playlists)}">
+            <form th:action="@{/playlist/add-song}" method="post" th:if="${not #lists.isEmpty(playlists)}">
+                <input type="hidden" name="songId" th:value="${song.songId}" />
+                <div class="list">
+
+                    <select name="playlistId" class="form-select form-select-sm mb-2" required>
+                        <option value="">Select Playlist</option>
+                        <option th:each="playlist : ${playlists}" th:value="${playlist.playlistId}"
+                            th:text="${playlist.playlistName}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm"><img width="30" height="30" src="https://img.icons8.com/fluency/48/ok--v1.png" alt="ok--v1"/></button>
+                </div>
+                
+            </form>
+            <p th:if="${#lists.isEmpty(playlists)}">No playlists available</p>
+    
+    
+    
+        </div>
 
 
-        <a th:if="${#authentication.principal.userId!=song.createByUser}"  th:href="@{/report/add/{songId}/{userId}(songId=${song.songId}, userId=${#authentication.principal.userId})}"
-            class="btn btn-success btn-sm">Report</a>
+
+        <div th:if="${check}">
+            <audio controls class="custom-audio">
+                <source th:src="@{${song.filePath}}" type="audio/mpeg">
+            </audio>
+        </div>
+        <div th:if="${!check}">
+            <p>Bạn không có quyền premium</p>
+        </div>
     </div>
+    <!-- </div> -->
+    
 
-       
-<script th:src="@{/wwwroot/js/main.js}"></script>
+
+    <script th:src="@{/wwwroot/js/main.js}"></script>
 </body>
+
 </html>

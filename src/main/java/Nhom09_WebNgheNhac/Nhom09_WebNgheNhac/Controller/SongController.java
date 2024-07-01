@@ -1,5 +1,6 @@
 package Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Controller;
 
+import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Category;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Playlist;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.Song;
 import Nhom09_WebNgheNhac.Nhom09_WebNgheNhac.Model.User;
@@ -70,10 +71,13 @@ public class SongController {
                     .toList();
 
             List<Playlist> playlists = playlistService.getPlaylistsByUser(user).stream().filter(p->p.getCategoryPlaylist().getCategoryPlaylistId()!=1).toList();
+            
             model.addAttribute("playlists", playlists);
+
         }
 
-
+        List<Category> category = categoryService.getAlCatologies();
+        model.addAttribute("category", category);
         model.addAttribute("songIds", songIds);
         return "/song/list-song";
     }
@@ -150,8 +154,10 @@ public class SongController {
             else
                 check = true;
         }
+        String userName = songService.getSongId(songId).get().getUsers().stream().map(User ::getFullName)
+                .collect(Collectors.joining(", "));
 
-
+        model.addAttribute("userName", userName);
         model.addAttribute("songIds", songIds);
         model.addAttribute("check", check);
         model.addAttribute("song", song);
