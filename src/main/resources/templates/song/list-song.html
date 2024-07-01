@@ -33,7 +33,10 @@
             border-radius: 5px;
         }
 
-        .catecon {}
+        .catecon a{
+            text-decoration: none;
+            color: black;
+        }
 
         .listCategory {
             padding: 10px;
@@ -68,6 +71,17 @@
            
             text-align: center;
         }
+        .sapxep button{
+            border: none;
+            background-color: #333;
+            color: aliceblue;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 10px;
+        }
+        .dau{
+            margin-left: 0 !important;
+        }
     </style>
 </head>
 
@@ -76,10 +90,11 @@
         <h1 style="text-align:center;margin-bottom: 15px;">Category List</h1>
         <div class="listCategory">
             <div class="catecon" th:each="cate : ${category}">
-                <img th:src="@{${cate.image}}" alt="chauw có">
-                <label class="ten text-center">avkdsjbvkdsbvkdsbvkbdskvbdkbvkdsbvk</label>
+                <a th:href="@{/category/detail/{id}(id=${cate.categoryId})}">
+                    <img th:src="@{${cate.image}}" alt="chauw có">
+                    <label class="ten text-center">avkdsjbvkdsbvkdsbvkbdskvbdkbvkdsbvk</label>
+                </a>
             </div>
-
         </div>
 
 
@@ -89,12 +104,12 @@
         <a th:href="@{/song/add}" class="btn btn-primary mb-3">Add New
             Song</a>
     </div>-->
-        <div>
-            <div th:if="${query != null}" style="display:flex">
+        <div class="sapxep"> 
+            <div th:if="${query != null}" style="display:flex" >
                 <form th:action="@{/search}" method="get" >
                     <input type="hidden" th:value="${query}" name="query">
                     <input type="hidden" th:value="tangdan" name="sapxep">
-                    <button type="submit">Tăng dần</button>
+                    <button type="submit" class="dau">Tăng dần</button>
                 </form>
                 <form th:action="@{/search}" method="get">
                     <input type="hidden" th:value="${query}" name="query">
@@ -105,7 +120,7 @@
             <div th:if="${query == null}" style="display:flex">
                 <form th:action="@{/}" method="get">
                     <input type="hidden" th:value="tangdan" name="sapxep">
-                    <button type="submit">Tăng dần</button>
+                    <button type="submit" class="dau">Tăng dần</button>
                 </form>
                 <form th:action="@{/}" method="get">
                     <input type="hidden" th:value="giamdan" name="sapxep">

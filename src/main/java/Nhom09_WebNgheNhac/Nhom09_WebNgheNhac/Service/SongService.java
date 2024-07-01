@@ -83,11 +83,7 @@ public class SongService {
         existingsSong.setTime(song.getTime());
         existingsSong.setImage(song.getImage());
         existingsSong.setFilePath(song.getFilePath());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        existingsSong.setCreateByUser(user.getUserId());
-
-
+        
         return songRepository.save(existingsSong);
     }
 

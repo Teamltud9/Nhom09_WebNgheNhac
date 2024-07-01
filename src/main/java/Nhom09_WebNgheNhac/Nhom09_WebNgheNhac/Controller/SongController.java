@@ -248,7 +248,8 @@ public class SongController {
                     .map(Song::getSongId)
                     .toList();
         }
-
+        List<Category> category = categoryService.getAlCatologies();
+        model.addAttribute("category", category);
         model.addAttribute("songIds", songIds);
         return "/song/list-song";
     }
@@ -275,7 +276,6 @@ public class SongController {
     public String likeSong(@PathVariable("songId") int songId, Model model) {
         Song song = songService.getSongId(songId).stream().findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
-
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
