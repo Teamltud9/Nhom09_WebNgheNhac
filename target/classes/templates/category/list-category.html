@@ -32,7 +32,7 @@
         <tr>
             <th class="text-center">IMAGE</th>
             <th class="text-center">NAME</th>
-            <th class="text-center">STATE</th>
+            <th class="text-center" sec:authorize="hasAuthority('ADMIN')">STATE</th>
             <th class="text-center" sec:authorize="hasAuthority('ADMIN')">ACTION</th>
         </tr>
         </thead>
@@ -49,7 +49,7 @@
                     <p class="text-body-tertiary fs-5 fw-medium text-uppercase" th:text="${category.categoryName}"></p>
                 </a>
                 </td>
-            <td>
+            <td sec:authorize="hasAuthority('ADMIN')">
                 <input type="checkbox" th:checked="${category.isDelete}" disabled="disabled">
             </td>
             <td sec:authorize="hasAuthority('ADMIN')" class="text-center align-middle ActionTH">
