@@ -122,9 +122,10 @@ public class PlaylistService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
         if (playlist.getSongPlaylist().remove(song)) {
             playlist.setQuantity(playlist.getQuantity() - 1);
-
-            song.setLikeCount(song.getLikeCount()-1);
-            songRepository.save(song);
+            if(playlist.getCategoryPlaylist().getCategoryPlaylistId() == 1) {
+                song.setLikeCount(song.getLikeCount() - 1);
+                songRepository.save(song);
+            }
 
         } else {
             throw new IllegalStateException("Song is not in the playlist");
