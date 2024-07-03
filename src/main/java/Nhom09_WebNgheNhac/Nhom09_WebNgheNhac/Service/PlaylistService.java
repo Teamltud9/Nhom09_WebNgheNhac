@@ -107,7 +107,6 @@ public class PlaylistService {
         if (!playlist.getSongPlaylist().contains(song)) {
             playlist.getSongPlaylist().add(song);
             playlist.setQuantity(playlist.getQuantity() + 1);
-            playlistRepository.save(playlist);
         }
     }
 
@@ -123,10 +122,11 @@ public class PlaylistService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid song Id:" + songId));
         if (playlist.getSongPlaylist().remove(song)) {
             playlist.setQuantity(playlist.getQuantity() - 1);
+            if(playlist.getCategoryPlaylist().getCategoryPlaylistId() == 1) {
+                song.setLikeCount(song.getLikeCount() - 1);
+                songRepository.save(song);
+            }
 
-            song.setLikeCount(song.getLikeCount()-1);
-            songRepository.save(song);
-            playlistRepository.save(playlist);
         } else {
             throw new IllegalStateException("Song is not in the playlist");
         }
